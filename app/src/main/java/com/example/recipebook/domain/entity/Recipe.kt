@@ -6,6 +6,7 @@ data class Recipe(
     var ingredients: String,
     var portions: Int,
     var image: String,
+    var isFavourite: Boolean = false,
     var id: Int?
 ) {
 }
