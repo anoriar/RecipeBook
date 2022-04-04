@@ -3,13 +3,15 @@ package com.example.recipebook.data.mapper
 import com.example.categorybook.data.mapper.CategoryMapper
 import com.example.recipebook.data.database.entity.RecipeDbEntity
 import com.example.recipebook.domain.entity.Recipe
+import javax.inject.Inject
 
-class RecipeMapper(
-    private val categoryMapper: CategoryMapper = CategoryMapper()
+class RecipeMapper @Inject constructor(
+    private val categoryMapper: CategoryMapper
 ) {
     fun mapDomainToDbEntity(recipe: Recipe): RecipeDbEntity{
         return RecipeDbEntity(
             id = recipe.id?: 0,
+            name = recipe.name,
             category = categoryMapper.mapDomainToDbEntity(recipe.category),
             text = recipe.text,
             ingredients = recipe.text,
@@ -21,7 +23,8 @@ class RecipeMapper(
 
     fun mapDbEntityToDomain(recipeDb: RecipeDbEntity): Recipe{
         return Recipe(
-            id = recipeDb.id?: 0,
+            id = recipeDb.id,
+            name = recipeDb.name,
             category = categoryMapper.mapDbEntityToDomain(recipeDb.category),
             text = recipeDb.text,
             ingredients = recipeDb.text,

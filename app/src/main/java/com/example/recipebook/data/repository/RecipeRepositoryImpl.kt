@@ -1,17 +1,17 @@
 package com.example.recipebook.data.repository
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.recipebook.data.database.dao.RecipeDao
 import com.example.recipebook.data.mapper.RecipeMapper
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.repository.RecipeRepositoryInterface
+import javax.inject.Inject
 
-class RecipeRepositoryImpl(
-    private val application: Application,
+class RecipeRepositoryImpl @Inject constructor(
     private val recipeMapper: RecipeMapper,
-    private val recipeDao: RecipeDao): RecipeRepositoryInterface
+    private val recipeDao: RecipeDao
+): RecipeRepositoryInterface
 {
 
     override fun getRecipeList(): LiveData<List<Recipe>> {

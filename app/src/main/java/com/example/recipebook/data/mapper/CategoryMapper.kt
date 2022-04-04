@@ -2,8 +2,9 @@ package com.example.categorybook.data.mapper
 
 import com.example.recipebook.data.database.entity.CategoryDbEntity
 import com.example.recipebook.domain.entity.Category
+import javax.inject.Inject
 
-class CategoryMapper {
+class CategoryMapper @Inject constructor() {
 
     fun mapDomainToDbEntity(category: Category): CategoryDbEntity {
         return CategoryDbEntity(
