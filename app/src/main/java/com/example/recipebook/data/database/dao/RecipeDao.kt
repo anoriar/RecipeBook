@@ -1,12 +1,10 @@
 package com.example.recipebook.data.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.recipebook.data.database.entity.RecipeDbEntity
 
+@Dao
 interface RecipeDao {
     @Query("SELECT * FROM recipes")
     fun getRecipes(): LiveData<List<RecipeDbEntity>>

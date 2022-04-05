@@ -12,7 +12,6 @@ class RecipeMapper @Inject constructor(
         return RecipeDbEntity(
             id = recipe.id?: 0,
             name = recipe.name,
-            category = categoryMapper.mapDomainToDbEntity(recipe.category),
             text = recipe.text,
             ingredients = recipe.text,
             portions = recipe.portions,
@@ -25,7 +24,7 @@ class RecipeMapper @Inject constructor(
         return Recipe(
             id = recipeDb.id,
             name = recipeDb.name,
-            category = categoryMapper.mapDbEntityToDomain(recipeDb.category),
+            category = null,
             text = recipeDb.text,
             ingredients = recipeDb.text,
             portions = recipeDb.portions,

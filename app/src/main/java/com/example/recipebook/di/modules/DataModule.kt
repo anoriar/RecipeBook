@@ -1,25 +1,32 @@
 package com.example.recipebook.di.modules
 
 import android.app.Application
+import androidx.room.Room
 import com.example.recipebook.data.database.RecipeDatabase
 import com.example.recipebook.data.database.dao.RecipeDao
 import com.example.recipebook.data.repository.RecipeRepositoryImpl
 import com.example.recipebook.domain.repository.RecipeRepositoryInterface
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
-@Module
-abstract class DataModule() {
 
-    @Binds
-    abstract fun bindRecipeRepository(impl: RecipeRepositoryImpl): RecipeRepositoryInterface
+@Module(includes = [AppModule::class])
+class DataModule {
 
-    companion object{
-        @Provides
-        fun provideRecipeDao(application: Application): RecipeDao {
-            return RecipeDatabase.getInstance(application).getRecipeDao()
-        }
+
+    @Provides
+    fun provideRecipeDatabase(application: Application): RecipeDatabase{
+        return Room.databaseBuilder(application, RecipeDatabase::class.java, RecipeDatabase.DB_NAME).build()
     }
 
+    @Provides
+    fun provideRecipeDao(recipeDatabase: RecipeDatabase): RecipeDao{
+        return recipeDatabase.getRecipeDao()
+    }
+
+    @Provides
+    fun provideRecipeRepository(impl: RecipeRepositoryImpl): RecipeRepositoryInterface{
+        return impl
+    }
 }
