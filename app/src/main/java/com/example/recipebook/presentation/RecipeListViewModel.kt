@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
+import com.example.recipebook.domain.usecases.AddCategoryUseCase
 import com.example.recipebook.domain.usecases.AddRecipeUseCase
 import com.example.recipebook.domain.usecases.GetRecipesUseCase
 import java.lang.Exception
@@ -13,7 +14,9 @@ import javax.inject.Inject
 
 class RecipeListViewModel @Inject constructor(
     private val getRecipesUseCase: GetRecipesUseCase,
-    private val addRecipeUseCase: AddRecipeUseCase
+    private val addRecipeUseCase: AddRecipeUseCase,
+//    TODO: убрать
+    private val addCategoryUseCase: AddCategoryUseCase
 ): ViewModel() {
 
     var recipeListLiveData: LiveData<List<Recipe>> = getRecipesUseCase.getRecipes()
@@ -27,7 +30,7 @@ class RecipeListViewModel @Inject constructor(
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
         val image = parseString(inputImage)
-        val category = Category("test", 1)
+        val category = Category("fruits", 1)
         if(validateInput(name, text, portions, ingredients, image)){
             val recipe = Recipe(
                 name = name,
@@ -40,6 +43,12 @@ class RecipeListViewModel @Inject constructor(
             )
             addRecipeUseCase.addRecipe(recipe)
         }
+    }
+
+//    TODO: убрать
+    fun addCategory(){
+        val category = Category("fruits")
+        addCategoryUseCase.addCategory(category)
     }
 
     private fun parseString(str: String): String{

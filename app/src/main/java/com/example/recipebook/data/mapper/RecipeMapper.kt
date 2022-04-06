@@ -11,6 +11,8 @@ class RecipeMapper @Inject constructor(
     fun mapDomainToDbEntity(recipe: Recipe): RecipeDbEntity{
         return RecipeDbEntity(
             id = recipe.id?: 0,
+//            TODO: как брать id?
+            categoryId = 1,
             name = recipe.name,
             text = recipe.text,
             ingredients = recipe.text,

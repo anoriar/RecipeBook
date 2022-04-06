@@ -8,6 +8,7 @@ class RecipeDbEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
+    val categoryId: Int,
     val text: String,
     val ingredients: String,
     val portions: Int,

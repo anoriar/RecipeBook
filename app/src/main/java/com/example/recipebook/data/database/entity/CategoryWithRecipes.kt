@@ -7,7 +7,8 @@ data class CategoryWithRecipes(
     @Embedded val category: CategoryDbEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "id"
+        entityColumn = "categoryId",
+        entity = RecipeDbEntity::class
     )
     val recipes: List<RecipeDbEntity>
 ) {

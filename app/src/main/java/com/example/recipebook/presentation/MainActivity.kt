@@ -19,8 +19,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         DaggerAppComponent.builder().appModule(AppModule(application)).build().inject(this)
 
+//        recipeListViewModel.addCategory()
+//        recipeListViewModel.addRecipe(
+//            inputName = "test",
+//            inputText = "test",
+//            inputPortions = "1",
+//            inputIngredients = "test",
+//            inputImage = "url"
+//        )
         recipeListViewModel.recipeListLiveData.observe(this){
             Log.d("RECIPES", it.toString())
         }
+
     }
 }

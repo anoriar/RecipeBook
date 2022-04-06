@@ -5,4 +5,6 @@ import com.example.recipebook.domain.entity.Category
 
 interface CategoryRepositoryInterface {
     fun getCategoryList(): LiveData<List<Category>>
+    fun addCategory(category: Category)
+    fun updateCategory(category: Category)
 }
