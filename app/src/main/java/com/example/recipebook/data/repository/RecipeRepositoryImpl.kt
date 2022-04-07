@@ -23,7 +23,7 @@ class RecipeRepositoryImpl @Inject constructor(
             conditions.add("LOWER(rec.name) like LOWER(\"%${recipeListQuery.search}%\")")
         }
 
-        if(recipeListQuery.categoryIds != null && recipeListQuery.categoryIds.isNotEmpty()){
+        if(recipeListQuery.categoryIds.isNotEmpty()){
             conditions.add("cat.id IN (${recipeListQuery.categoryIds.joinToString(", ")})")
         }
         if(conditions.isNotEmpty()){

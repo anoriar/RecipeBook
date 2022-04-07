@@ -31,5 +31,12 @@ class MainActivity : AppCompatActivity() {
             Log.d("RECIPES", it.toString())
         }
 
+        recipeListViewModel.categoriesLiveData.observe(this){
+            Log.d("CATEGORIES", it.toString())
+        }
+
+        recipeListViewModel.categorySelect(2)
+        recipeListViewModel.searchChange("запеч")
+
     }
 }
