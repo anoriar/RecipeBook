@@ -20,7 +20,7 @@ class RecipeListViewModel @Inject constructor(
     private val addCategoryUseCase: AddCategoryUseCase
 ): ViewModel() {
 
-    var recipeListLiveData: LiveData<List<Recipe>> = getRecipesUseCase.getRecipes(RecipeListQuery(search = "апеч", categoryIds = listOf(2)))
+    var recipeListLiveData: LiveData<List<Recipe>> = getRecipesUseCase.getRecipes(RecipeListQuery(search = "запеч", categoryIds = listOf(2)))
 
 
 

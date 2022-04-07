@@ -20,7 +20,7 @@ class RecipeRepositoryImpl @Inject constructor(
         var strQuery = "SELECT * FROM recipes AS rec JOIN categories AS cat on cat.id = rec.categoryId"
         val conditions: MutableList<String> = mutableListOf()
         if(recipeListQuery.search != null){
-            conditions.add("rec.name like \"%${recipeListQuery.search}%\"")
+            conditions.add("LOWER(rec.name) like LOWER(\"%${recipeListQuery.search}%\")")
         }
 
         if(recipeListQuery.categoryIds != null && recipeListQuery.categoryIds.isNotEmpty()){
