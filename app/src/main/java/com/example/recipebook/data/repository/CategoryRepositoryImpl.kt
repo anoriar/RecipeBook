@@ -19,6 +19,10 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getCategoryById(id: Int): Category {
+        return categoryMapper.mapDbEntityToDomain(categoryDao.getCategoryById(id))
+    }
+
     override fun addCategory(category: Category) {
         categoryDao.addUpdateCategory(categoryMapper.mapDomainToDbEntity(category))
     }

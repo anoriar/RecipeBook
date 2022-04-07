@@ -13,7 +13,7 @@ interface CategoryDao {
     fun addUpdateCategory(category: CategoryDbEntity)
 
     @Query("SELECT * FROM categories WHERE id = :id LIMIT 1")
-    fun getCategoryById(id: Int): LiveData<CategoryDbEntity>
+    fun getCategoryById(id: Int): CategoryDbEntity
 
     @Query("SELECT * FROM categories")
     fun getCategories(): LiveData<List<CategoryDbEntity>>
