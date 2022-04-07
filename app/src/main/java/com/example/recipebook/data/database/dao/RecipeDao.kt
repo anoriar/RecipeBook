@@ -2,14 +2,15 @@ package com.example.recipebook.data.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.recipebook.data.database.entity.RecipeDbEntity
 import com.example.recipebook.data.database.entity.RecipeWithCategory
 
 @Dao
 interface RecipeDao {
     @Transaction
-    @Query("SELECT * FROM recipes")
-    fun getRecipes(): LiveData<List<RecipeWithCategory>>
+    @RawQuery
+    fun getRecipes(query: SupportSQLiteQuery): LiveData<List<RecipeWithCategory>>
 
     @Transaction
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")

@@ -11,7 +11,6 @@ import com.example.recipebook.domain.repository.CategoryRepositoryInterface
 import com.example.recipebook.domain.repository.RecipeRepositoryInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 
 @Module(includes = [AppModule::class])

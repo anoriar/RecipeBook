@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
+import com.example.recipebook.domain.repository.query.RecipeListQuery
 import com.example.recipebook.domain.usecases.AddCategoryUseCase
 import com.example.recipebook.domain.usecases.AddRecipeUseCase
 import com.example.recipebook.domain.usecases.GetRecipesUseCase
@@ -19,7 +20,7 @@ class RecipeListViewModel @Inject constructor(
     private val addCategoryUseCase: AddCategoryUseCase
 ): ViewModel() {
 
-    var recipeListLiveData: LiveData<List<Recipe>> = getRecipesUseCase.getRecipes()
+    var recipeListLiveData: LiveData<List<Recipe>> = getRecipesUseCase.getRecipes(RecipeListQuery(search = "апеч", categoryIds = listOf(2)))
 
 
 
