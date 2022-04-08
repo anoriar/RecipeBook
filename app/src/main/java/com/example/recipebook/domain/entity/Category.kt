@@ -1,7 +1,7 @@
 package com.example.recipebook.domain.entity
 
 data class Category(
-    var name: String,
-    var id: Int? = null
+    val name: String,
+    val id: Int? = null
 ) {
 }

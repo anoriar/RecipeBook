@@ -1,13 +1,13 @@
 package com.example.recipebook.domain.entity
 
 data class Recipe(
-    var name: String,
-    var category: Category?,
-    var text: String,
-    var ingredients: String,
-    var portions: Int,
-    var image: String,
-    var isFavourite: Boolean = false,
-    var id: Int?
+    val name: String,
+    val category: Category?,
+    val text: String,
+    val ingredients: String,
+    val portions: Int,
+    val image: String,
+    val isFavourite: Boolean = false,
+    val id: Int?
 ) {
 }

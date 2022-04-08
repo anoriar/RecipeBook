@@ -12,9 +12,10 @@ import javax.inject.Inject
 class RecipeViewModel @Inject constructor(
     private val addRecipeUseCase: AddRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase,
-    private val getRecipesUseCase: GetRecipesUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getCategoryByIdUseCase: GetCategoryByIdUseCase
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
+    private val getRecipeByIdUseCase: GetRecipeByIdUseCase
 ): ViewModel() {
 
     private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
@@ -23,8 +24,14 @@ class RecipeViewModel @Inject constructor(
             return _recipe
         }
 
-    fun getRecipeById(id: Int): LiveData<Recipe>{
-        return getRecipeById(id)
+    val categoriesLiveData: LiveData<List<Category>> = getCategories()
+
+    private fun getCategories(): LiveData<List<Category>>{
+        return getCategoriesUseCase.getGategories()
+    }
+
+    fun getRecipeById(id: Int){
+        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
     }
 
     private fun parseInputData(
@@ -81,9 +88,12 @@ class RecipeViewModel @Inject constructor(
     ){
         val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
         if(recipe != null){
-            recipe.id = id
-            updateRecipeUseCase.updateRecipe(recipe)
+            updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
         }
+    }
+
+    fun deleteRecipe(recipe: Recipe){
+        deleteRecipeUseCase.deleteRecipe(recipe)
     }
 
     private fun parseString(str: String): String{

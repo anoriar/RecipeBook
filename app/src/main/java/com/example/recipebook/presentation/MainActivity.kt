@@ -13,30 +13,26 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var recipeListViewModel: RecipeListViewModel
 
+    @Inject
+    lateinit var recipeViewModel: RecipeViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         DaggerAppComponent.builder().appModule(AppModule(application)).build().inject(this)
 
-//        recipeListViewModel.addCategory()
-//        recipeListViewModel.addRecipe(
-//            inputName = "test",
-//            inputText = "test",
-//            inputPortions = "1",
-//            inputIngredients = "test",
-//            inputImage = "url"
-//        )
-        recipeListViewModel.recipeListLiveData.observe(this){
-            Log.d("RECIPES", it.toString())
-        }
 
-        recipeListViewModel.categoriesLiveData.observe(this){
-            Log.d("CATEGORIES", it.toString())
-        }
+//        recipeListViewModel.recipeListLiveData.observe(this){
+//            Log.d("RECIPES", it.toString())
+//        }
+//
+//        recipeListViewModel.categoriesLiveData.observe(this){
+//            Log.d("CATEGORIES", it.toString())
+//        }
 
-        recipeListViewModel.categorySelect(2)
-        recipeListViewModel.searchChange("запеч")
+//        recipeListViewModel.categorySelect(2)
+//        recipeListViewModel.searchChange("запеч")
 
     }
 }

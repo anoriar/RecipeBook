@@ -7,13 +7,17 @@ import androidx.lifecycle.ViewModel
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.repository.query.RecipeListQuery
+import com.example.recipebook.domain.usecases.AddRecipeToFavouritesUseCase
+import com.example.recipebook.domain.usecases.DeleteRecipeFromFavouritesUseCase
 import com.example.recipebook.domain.usecases.GetCategoriesUseCase
 import com.example.recipebook.domain.usecases.GetRecipesUseCase
 import javax.inject.Inject
 
 class RecipeListViewModel @Inject constructor(
     private val getRecipesUseCase: GetRecipesUseCase,
-    private val getCategoriesUseCase: GetCategoriesUseCase
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val addRecipeToFavouritesUseCase: AddRecipeToFavouritesUseCase,
+    private val deleteRecipeFromFavouritesUseCase: DeleteRecipeFromFavouritesUseCase
 ): ViewModel() {
 
 
@@ -33,15 +37,23 @@ class RecipeListViewModel @Inject constructor(
         return getCategoriesUseCase.getGategories()
     }
 
-    fun searchChange(searchQuery: String){
+    fun changeSearchQuery(searchQuery: String){
         _recipeListQuery.value?.search = searchQuery
     }
 
-    fun categorySelect(categoryId: Int){
+    fun selectCategory(categoryId: Int){
         _recipeListQuery.value?.categoryIds?.add(categoryId)
     }
 
-    fun categoryUnselect(categoryId: Int){
+    fun unselectCategory(categoryId: Int){
         _recipeListQuery.value?.categoryIds?.remove(categoryId)
+    }
+
+    fun addRecipeToFavourites(recipe: Recipe){
+        addRecipeToFavouritesUseCase.addRecipeToFavourites(recipe)
+    }
+
+    fun deleteRecipeFromFavourites(recipe: Recipe){
+        deleteRecipeFromFavouritesUseCase.deleteRecipeToFavourites(recipe)
     }
 }

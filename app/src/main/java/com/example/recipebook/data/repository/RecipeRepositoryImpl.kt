@@ -37,12 +37,9 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRecipeById(id: Int): LiveData<Recipe> {
+    override fun getRecipeById(id: Int): Recipe {
         val recipeDb = recipeDao.getRecipeById(id)
-        return Transformations.map(recipeDb
-        ) {
-            recipeMapper.mapDbEntityToDomain(it)
-        }
+        return recipeMapper.mapDbEntityToDomain(recipeDb)
     }
 
     override fun addRecipe(recipe: Recipe) {
