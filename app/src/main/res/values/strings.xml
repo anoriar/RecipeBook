@@ -4,4 +4,10 @@
     <string name="invalid_format_error">Invalid format</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_new_recipe">Add new recipe</string>
+    <string name="portions">Порции:</string>
+    <string name="ingredients">Ингредиенты:</string>
+    <string name="ingredients_tools_text">курица (1,5 кг) 1 шт. соль (по вкусу) 1-1.5 ч. ложки майонез 3 ст. ложки или сметана 3 ст. ложки чеснок 3 зубчика перец чёрный по вкусу зелень для украшения по вкусу</string>
+    <string name="cooking_method">Способ приготовления</string>
+    <string name="cooking_method_tools_text">Только на первый взгляд запеченная курица – простое блюдо. На самом деле, не так-то просто запечь целую тушку курицы, чтобы и ножки приготовились, и грудка не пересохла, и кожа была румяной и подсушенной. У каждой хозяйки есть свои хитрости. Одни переворачивают курицу с боку на бок, другие прячут под кожи грудки сливочное масло, третьи подбирают оптимальный температурный режим. Интересную технологию приготовления запеченной курицы предлагает Хестон Блюменталь (Heston Blumenthal). Для начала он замачивает курицу в растворе соли (8 г соли на 100 г воды) на ночь, ополаскивает и насухо промакивает.</string>
+    <string name="category">Категория:</string>
 </resources>
