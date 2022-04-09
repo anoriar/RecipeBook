@@ -1,4 +1,4 @@
-package com.example.recipebook.presentation
+package com.example.recipebook.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,7 +19,6 @@ class RecipeListViewModel @Inject constructor(
     private val addRecipeToFavouritesUseCase: AddRecipeToFavouritesUseCase,
     private val deleteRecipeFromFavouritesUseCase: DeleteRecipeFromFavouritesUseCase
 ): ViewModel() {
-
 
     private var _recipeListQuery: MutableLiveData<RecipeListQuery> = MutableLiveData<RecipeListQuery>(RecipeListQuery())
 
