@@ -75,6 +75,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cv_recipe_portions" >
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -105,6 +106,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cv_recipe_ingredients" >
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
