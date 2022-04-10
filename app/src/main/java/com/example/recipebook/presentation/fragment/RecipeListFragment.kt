@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipebook.databinding.FragmentRecipeListBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
+import com.example.recipebook.presentation.adapter.CategoryFilterAdapter
 import com.example.recipebook.presentation.adapter.RecipeListAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeListViewModel
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class RecipeListFragment : Fragment() {
     @Inject
     lateinit var recipeListViewModel: RecipeListViewModel
     private lateinit var recipeListAdapter: RecipeListAdapter
+    private lateinit var categoryFilterAdapter: CategoryFilterAdapter
 
     private var _binding: FragmentRecipeListBinding? = null
     private val binding: FragmentRecipeListBinding
@@ -48,20 +51,30 @@ class RecipeListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        initRecipeListRecyclerView()
+        initCategoryFilterRecyclerView()
         observeViewModel()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecipeListRecyclerView(){
         val recyclerView: RecyclerView = binding.rvRecipesList
         recipeListAdapter = RecipeListAdapter()
         recyclerView.adapter = recipeListAdapter
+    }
+
+    private fun initCategoryFilterRecyclerView(){
+        val recyclerView: RecyclerView = binding.rvCategoriesFilter
+        categoryFilterAdapter = CategoryFilterAdapter()
+        recyclerView.adapter = categoryFilterAdapter
     }
 
     private fun observeViewModel(){
         recipeListViewModel.recipeListLiveData.observe(viewLifecycleOwner) {
             recipeListAdapter.submitList(it)
             Log.d("RECIPES", it.toString())
+        }
+        recipeListViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
+            categoryFilterAdapter.submitList(it)
         }
     }
 
