@@ -17,14 +17,14 @@ class RecipeRepositoryImpl @Inject constructor(
 {
 
     override fun getRecipeList(recipeListQuery: RecipeListQuery): LiveData<List<Recipe>> {
-        var strQuery = "SELECT * FROM recipes AS rec JOIN categories AS cat on cat.id = rec.categoryId"
+        var strQuery = "SELECT * FROM recipes"
         val conditions: MutableList<String> = mutableListOf()
         if(recipeListQuery.search != null){
-            conditions.add("LOWER(rec.name) like LOWER(\"%${recipeListQuery.search}%\")")
+            conditions.add("LOWER(recipes.name) like LOWER(\"%${recipeListQuery.search}%\")")
         }
 
         if(recipeListQuery.categoryIds.isNotEmpty()){
-            conditions.add("cat.id IN (${recipeListQuery.categoryIds.joinToString(", ")})")
+            conditions.add("recipes.categoryId IN (${recipeListQuery.categoryIds.joinToString(", ")})")
         }
         if(conditions.isNotEmpty()){
             strQuery += " where ${conditions.joinToString(" and ")}"
