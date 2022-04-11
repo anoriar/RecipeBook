@@ -59,6 +59,7 @@ class RecipeAddEditFragment : Fragment() {
     fun observeViewModel(){
         recipeViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             spinnerAdapter.values = it
+            spinnerAdapter.notifyDataSetChanged()
         }
     }
 
