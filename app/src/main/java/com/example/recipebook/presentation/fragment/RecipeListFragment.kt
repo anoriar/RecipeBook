@@ -53,7 +53,6 @@ class RecipeListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecipeListRecyclerView()
         initCategoryFilterRecyclerView()
-        initClickListeners()
         initSearchView()
         observeViewModel()
     }
@@ -68,9 +67,6 @@ class RecipeListFragment : Fragment() {
         val recyclerView: RecyclerView = binding.rvCategoriesFilter
         categoryFilterAdapter = CategoryFilterAdapter()
         recyclerView.adapter = categoryFilterAdapter
-    }
-
-    private fun initClickListeners(){
         categoryFilterAdapter.onCategoryFilterClickListener = {
             if(!it.isSelected){
                 recipeListViewModel.selectCategory(it.id)
@@ -79,6 +75,7 @@ class RecipeListFragment : Fragment() {
             }
         }
     }
+
     private fun initSearchView(){
         binding.svRecipes.setOnQueryTextListener(object:
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
