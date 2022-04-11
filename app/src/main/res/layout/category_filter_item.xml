@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="category"
-            type="com.example.recipebook.domain.entity.Category" />
+            name="categoryFilter"
+            type="com.example.recipebook.domain.entity.CategoryFilter" />
     </data>
 
     <Button
@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
         android:layout_marginHorizontal="5dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="12sp"
-        android:text="@{category.name}"
+        app:categoryFilterButtonBackgroundColor="@{categoryFilter.selected}"
+        android:text="@{categoryFilter.name}"
         tools:text="выпечка"></Button>
 </layout>

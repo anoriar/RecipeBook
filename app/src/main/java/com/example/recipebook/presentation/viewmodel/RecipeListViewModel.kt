@@ -1,10 +1,12 @@
 package com.example.recipebook.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.recipebook.domain.entity.Category
+import com.example.recipebook.domain.entity.CategoryFilter
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.repository.query.RecipeListQuery
 import com.example.recipebook.domain.usecases.AddRecipeToFavouritesUseCase
@@ -22,7 +24,22 @@ class RecipeListViewModel @Inject constructor(
 
     private var _recipeListQuery: MutableLiveData<RecipeListQuery> = MutableLiveData<RecipeListQuery>(RecipeListQuery())
 
-    val categoriesLiveData: LiveData<List<Category>> = getCategories()
+
+    private val categoriesLiveData: LiveData<List<Category>> = getCategories()
+
+    val categoriesFilter: LiveData<List<CategoryFilter>> = Transformations.map(categoriesLiveData) { it ->
+        it.map { category ->
+            var isSelected = false
+            _recipeListQuery.value?.let {
+                if(it.categoryIds.contains(category.id)){
+                    isSelected = true
+                }
+            }
+
+            CategoryFilter(category.id?:0, category.name, isSelected)
+        }
+    }
+
 
     val recipeListLiveData: LiveData<List<Recipe>> = Transformations.switchMap(_recipeListQuery) {
         getRecipesByQuery(it)

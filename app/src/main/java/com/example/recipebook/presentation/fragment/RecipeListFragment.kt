@@ -53,6 +53,7 @@ class RecipeListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecipeListRecyclerView()
         initCategoryFilterRecyclerView()
+        initClickListeners()
         observeViewModel()
     }
 
@@ -68,13 +69,24 @@ class RecipeListFragment : Fragment() {
         recyclerView.adapter = categoryFilterAdapter
     }
 
+    private fun initClickListeners(){
+        categoryFilterAdapter.onCategoryFilterClickListener = {
+            if(!it.isSelected){
+                recipeListViewModel.selectCategory(it.id)
+            } else{
+                recipeListViewModel.unselectCategory(it.id)
+            }
+        }
+    }
+
     private fun observeViewModel(){
         recipeListViewModel.recipeListLiveData.observe(viewLifecycleOwner) {
             recipeListAdapter.submitList(it)
             Log.d("RECIPES", it.toString())
         }
-        recipeListViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
+        recipeListViewModel.categoriesFilter.observe(viewLifecycleOwner) {
             categoryFilterAdapter.submitList(it)
+            Log.d("RECIPES", it.toString())
         }
     }
 

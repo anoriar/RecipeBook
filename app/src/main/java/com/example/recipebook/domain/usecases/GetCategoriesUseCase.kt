@@ -11,4 +11,5 @@ class GetCategoriesUseCase @Inject constructor(private val categoryRepository: C
        return categoryRepository.getCategoryList()
     }
 
+
 }
