@@ -1,10 +1,6 @@
 package com.example.recipebook.presentation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.CategoryFilter
 import com.example.recipebook.domain.entity.Recipe
@@ -22,20 +18,32 @@ class RecipeListViewModel @Inject constructor(
     private val deleteRecipeFromFavouritesUseCase: DeleteRecipeFromFavouritesUseCase
 ): ViewModel() {
 
-    private var _recipeListQuery: MutableLiveData<RecipeListQuery> = MutableLiveData<RecipeListQuery>(RecipeListQuery())
-
+    private var _recipeListQuery: MutableLiveData<RecipeListQuery> = MutableLiveData<RecipeListQuery>(
+        RecipeListQuery()
+    )
 
     private val categoriesLiveData: LiveData<List<Category>> = getCategories()
 
-    val categoriesFilter: LiveData<List<CategoryFilter>> = Transformations.map(categoriesLiveData) { it ->
-        it.map { category ->
+    val categoriesFilter: MediatorLiveData<List<CategoryFilter>> = MediatorLiveData()
+    init {
+        categoriesFilter.addSource(categoriesLiveData) {
+            buildCategoriesFilter()
+        }
+        categoriesFilter.addSource(_recipeListQuery) {
+            if(categoriesFilter.value != null){
+                buildCategoriesFilter()
+            }
+        }
+    }
+
+    private fun buildCategoriesFilter(){
+        categoriesFilter.value = categoriesLiveData.value?.map { category ->
             var isSelected = false
             _recipeListQuery.value?.let {
                 if(it.categoryIds.contains(category.id)){
                     isSelected = true
                 }
             }
-
             CategoryFilter(category.id?:0, category.name, isSelected)
         }
     }
@@ -54,15 +62,19 @@ class RecipeListViewModel @Inject constructor(
     }
 
     fun changeSearchQuery(searchQuery: String){
-        _recipeListQuery.value?.search = searchQuery
+        _recipeListQuery.value = _recipeListQuery.value?.copy(search = searchQuery)?:RecipeListQuery()
     }
 
     fun selectCategory(categoryId: Int){
-        _recipeListQuery.value?.categoryIds?.add(categoryId)
+        val curQuery: RecipeListQuery = _recipeListQuery.value?: RecipeListQuery()
+        curQuery.categoryIds.add(categoryId)
+        _recipeListQuery.value = curQuery.copy()
     }
 
     fun unselectCategory(categoryId: Int){
-        _recipeListQuery.value?.categoryIds?.remove(categoryId)
+        val curQuery: RecipeListQuery = _recipeListQuery.value?: RecipeListQuery()
+        curQuery.categoryIds.remove(categoryId)
+        _recipeListQuery.value = curQuery.copy()
     }
 
     fun addRecipeToFavourites(recipe: Recipe){

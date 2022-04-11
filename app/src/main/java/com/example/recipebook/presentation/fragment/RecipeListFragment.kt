@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipebook.databinding.FragmentRecipeListBinding
 import com.example.recipebook.di.DaggerAppComponent
@@ -54,6 +54,7 @@ class RecipeListFragment : Fragment() {
         initRecipeListRecyclerView()
         initCategoryFilterRecyclerView()
         initClickListeners()
+        initSearchView()
         observeViewModel()
     }
 
@@ -77,6 +78,23 @@ class RecipeListFragment : Fragment() {
                 recipeListViewModel.unselectCategory(it.id)
             }
         }
+    }
+    private fun initSearchView(){
+        binding.svRecipes.setOnQueryTextListener(object:
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if(newText.isEmpty()){
+                    this.onQueryTextSubmit("");
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                recipeListViewModel.changeSearchQuery(query)
+                return true
+            }
+        })
     }
 
     private fun observeViewModel(){
