@@ -12,4 +12,5 @@
     <string name="category">Категория:</string>
     <string name="recipe_image">Recipe image</string>
     <string name="btn_save">Save</string>
+    <string name="input_name_hint">Введите название</string>
 </resources>

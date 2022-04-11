@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="recipeViewModel"
+            type="com.example.recipebook.presentation.viewmodel.RecipeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,15 +27,18 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/recipe_image" />
 
-        <TextView
-            android:id="@+id/tv_recipe_name"
+
+        <EditText
+            android:background="@null"
+            android:id="@+id/et_recipe_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:text="Запеченая курица"
             android:gravity="center"
+            android:autofillHints="1"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:hint="@string/input_name_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_recipe_image" />
@@ -48,7 +53,7 @@
             app:contentPaddingLeft="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_recipe_name">
+            app:layout_constraintTop_toBottomOf="@+id/et_recipe_name">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -169,7 +174,8 @@
                     android:id="@+id/spinner_recipe_category"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:selectedItemPosition="@={recipeViewModel.selectedCategoryId}"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

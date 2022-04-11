@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recipebook.R
 import com.example.recipebook.databinding.FragmentRecipeListBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
@@ -54,6 +55,7 @@ class RecipeListFragment : Fragment() {
         initRecipeListRecyclerView()
         initCategoryFilterRecyclerView()
         initSearchView()
+        initAddButton()
         observeViewModel()
     }
 
@@ -92,6 +94,15 @@ class RecipeListFragment : Fragment() {
                 return true
             }
         })
+    }
+
+    private fun initAddButton(){
+        binding.buttonAddRecipe.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.recipe_book_container, RecipeAddEditFragment.getAddInstance())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun observeViewModel(){

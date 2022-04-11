@@ -26,6 +26,13 @@ class RecipeViewModel @Inject constructor(
 
     val categoriesLiveData: LiveData<List<Category>> = getCategories()
 
+    private var _selectedCategoryId: MutableLiveData<Int> = MutableLiveData()
+    val selectedCategoryId: MutableLiveData<Int>
+        get() {
+            return _selectedCategoryId
+        }
+
+
     private fun getCategories(): LiveData<List<Category>>{
         return getCategoriesUseCase.getGategories()
     }
@@ -131,6 +138,7 @@ class RecipeViewModel @Inject constructor(
         }
         return true
     }
+
 
     companion object {
         val NAME_IS_EMPTY = "NAME_IS_EMPTY" to R.string.empty_field_error
