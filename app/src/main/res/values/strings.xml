@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RecipeBook</string>
-    <string name="empty_field_error">Field is empty</string>
-    <string name="invalid_format_error">Invalid format</string>
+    <string name="empty_field_error">Поле не должно быть пустым</string>
+    <string name="invalid_format_error">Неверный формат</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_new_recipe">Add new recipe</string>
     <string name="portions">Порции:</string>

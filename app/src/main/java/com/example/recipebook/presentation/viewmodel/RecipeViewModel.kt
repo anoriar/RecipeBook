@@ -13,7 +13,6 @@ class RecipeViewModel @Inject constructor(
     private val addRecipeUseCase: AddRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase
 ): ViewModel() {
@@ -32,6 +31,16 @@ class RecipeViewModel @Inject constructor(
             return _selectedCategoryId
         }
 
+    private var _errors: MutableLiveData<MutableList<Pair<String, Int>>> = MutableLiveData()
+    val errors: MutableLiveData<MutableList<Pair<String, Int>>>
+        get() {
+            return _errors
+        }
+
+
+    private val _shouldClose: MutableLiveData<Unit> = MutableLiveData<Unit>()
+    val shouldClose: LiveData<Unit>
+        get() = _shouldClose
 
     private fun getCategories(): LiveData<List<Category>>{
         return getCategoriesUseCase.getGategories()
@@ -47,7 +56,7 @@ class RecipeViewModel @Inject constructor(
         inputPortions: String,
         inputIngredients: String,
         inputImage: String,
-        inputCategory: String
+        inputCategory: Category
     ): Recipe?{
         var recipe: Recipe? = null
         val name = parseString(inputName)
@@ -55,7 +64,6 @@ class RecipeViewModel @Inject constructor(
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
         val image = parseString(inputImage)
-        val category = getCategoryByIdUseCase.getCategoryById(parseNumber(inputCategory))
         if(validateInput(name, text, portions, ingredients, image)){
             recipe = Recipe(
                 name = name,
@@ -63,7 +71,7 @@ class RecipeViewModel @Inject constructor(
                 portions = portions,
                 ingredients = ingredients,
                 image = image,
-                category = category,
+                category = inputCategory,
                 id = null
             )
         }
@@ -76,11 +84,12 @@ class RecipeViewModel @Inject constructor(
         inputPortions: String,
         inputIngredients: String,
         inputImage: String,
-        inputCategory: String
+        inputCategory: Category
     ){
         val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
         if(recipe != null){
             addRecipeUseCase.addRecipe(recipe)
+            finishWork()
         }
     }
 
@@ -91,11 +100,12 @@ class RecipeViewModel @Inject constructor(
         inputPortions: String,
         inputIngredients: String,
         inputImage: String,
-        inputCategory: String
+        inputCategory: Category
     ){
         val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
         if(recipe != null){
             updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
+            finishWork()
         }
     }
 
@@ -134,9 +144,14 @@ class RecipeViewModel @Inject constructor(
             errors.add(IMAGE_IS_EMPTY)
         }
         if(errors.isNotEmpty()){
+            _errors.value = errors
             return false
         }
         return true
+    }
+
+    fun finishWork() {
+        _shouldClose.value = Unit
     }
 
 

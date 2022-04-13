@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
@@ -13,6 +14,7 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
+import com.google.android.material.textfield.TextInputLayout
 import javax.inject.Inject
 
 class RecipeAddEditFragment : Fragment() {
@@ -38,6 +40,25 @@ class RecipeAddEditFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        parseParams()
+    }
+
+    fun parseParams(){
+        val args = requireArguments()
+        if (!args.containsKey(MODE_ARG)) {
+            throw RuntimeException("Param mode not found")
+        }
+        mode = args.getString(MODE_ARG) ?: UNKNOWN_MODE
+        if (mode != EDIT_MODE && mode != ADD_MODE) {
+            throw RuntimeException("Unknown mode $mode")
+        }
+
+        if(mode == EDIT_MODE) {
+            if (!args.containsKey(RECIPE_ID_ARG)) {
+                throw RuntimeException("Param recipe id not found")
+            }
+            recipeId = args.getInt(RECIPE_ID_ARG)
+        }
     }
 
     override fun onCreateView(
@@ -57,9 +78,21 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     fun observeViewModel(){
+        val validationFields: Map<String, EditText> = mapOfValidationFields()
+
         recipeViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             spinnerAdapter.values = it
             spinnerAdapter.notifyDataSetChanged()
+        }
+
+        recipeViewModel.errors.observe(viewLifecycleOwner) {
+            for (error in it) {
+                validationFields[error.first]?.error = getString(error.second)
+            }
+        }
+
+        recipeViewModel.shouldClose.observe(viewLifecycleOwner) {
+            activity?.onBackPressed()
         }
     }
 
@@ -86,7 +119,7 @@ class RecipeAddEditFragment : Fragment() {
 //                TODO: изображения
                 "test",
 //                TODO:??
-                binding.spinnerRecipeCategory.selectedItem.toString()
+                binding.spinnerRecipeCategory.selectedItem as Category
             )
         }
     }
@@ -98,6 +131,16 @@ class RecipeAddEditFragment : Fragment() {
 //            recipeViewModel.updateRecipe(recipeId)
         }
     }
+
+    /**
+     * Map ViewModel schema with views
+     */
+    private fun mapOfValidationFields() = mapOf(
+        RecipeViewModel.NAME_IS_EMPTY.first to binding.etRecipeName,
+        RecipeViewModel.TEXT_IS_EMPTY.first to binding.etRecipeText,
+        RecipeViewModel.INGREDIENTS_IS_EMPTY.first to binding.etRecipeIngredients,
+        RecipeViewModel.PORTIONS_INVALID_FORMAT.first to binding.etRecipePortions
+    )
 
     companion object {
         private const val MODE_ARG = "mode_arg"
