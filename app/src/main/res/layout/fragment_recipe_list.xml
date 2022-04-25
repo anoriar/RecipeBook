@@ -53,12 +53,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recipes_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="14dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/rv_categories_filter"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/recipe_list_item" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
