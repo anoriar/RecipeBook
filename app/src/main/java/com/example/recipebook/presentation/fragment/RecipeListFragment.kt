@@ -56,6 +56,7 @@ class RecipeListFragment : Fragment() {
         initCategoryFilterRecyclerView()
         initSearchView()
         initAddButton()
+        initRecipeOnClickListener()
         observeViewModel()
     }
 
@@ -121,6 +122,17 @@ class RecipeListFragment : Fragment() {
             Log.d("RECIPES", it.toString())
         }
     }
+
+
+    private fun initRecipeOnClickListener() {
+        recipeListAdapter.onRecipeClickListener = {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.recipe_book_container, RecipeDetailFragment.getInstance(it.id?:0))
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
 
     companion object {
         fun getInstance(): RecipeListFragment {

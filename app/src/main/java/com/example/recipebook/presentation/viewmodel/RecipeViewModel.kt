@@ -18,37 +18,6 @@ class RecipeViewModel @Inject constructor(
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase
 ): ViewModel() {
 
-    private var _recipeName: MutableLiveData<String?> = MutableLiveData<String?>()
-    val recipeName: LiveData<String?>
-        get() {
-            return _recipeName
-        }
-
-    private var _recipeText: MutableLiveData<String?> = MutableLiveData<String?>()
-    val recipeText: LiveData<String?>
-        get() {
-            return _recipeText
-        }
-
-    private var _recipeIngredients: MutableLiveData<String?> = MutableLiveData<String?>()
-    val recipeIngredients: LiveData<String?>
-        get() {
-            return _recipeIngredients
-        }
-
-    private var _recipeCategory: MutableLiveData<Category?> = MutableLiveData<Category?>()
-    val recipeCategory: LiveData<Category?>
-        get() {
-            return _recipeCategory
-        }
-
-    private var _recipePortions: MutableLiveData<Int> = MutableLiveData<Int>(0)
-    val recipePortions: LiveData<Int>
-        get() {
-            return _recipePortions
-        }
-
-
     private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
     val recipeImage: LiveData<Uri?>
         get() {

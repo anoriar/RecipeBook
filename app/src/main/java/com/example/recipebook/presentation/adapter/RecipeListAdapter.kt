@@ -11,6 +11,7 @@ import com.example.recipebook.presentation.adapter_callback.RecipeDiffCallback
 class RecipeListAdapter: ListAdapter<Recipe, RecipeListAdapter.RecipeViewHolder>(
     RecipeDiffCallback()
 ) {
+    var onRecipeClickListener: ((Recipe) -> Unit)? = null
 
     class RecipeViewHolder(val recipeListItemBinding: RecipeListItemBinding) : RecyclerView.ViewHolder(recipeListItemBinding.root)
 
@@ -21,7 +22,8 @@ class RecipeListAdapter: ListAdapter<Recipe, RecipeListAdapter.RecipeViewHolder>
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe: Recipe = getItem(position)
         holder.recipeListItemBinding.recipe = recipe
+        holder.itemView.setOnClickListener {
+            onRecipeClickListener?.invoke(recipe)
+        }
     }
-
-
 }
