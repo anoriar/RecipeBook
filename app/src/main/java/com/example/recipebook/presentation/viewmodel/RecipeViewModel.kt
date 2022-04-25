@@ -1,5 +1,6 @@
 package com.example.recipebook.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,10 +18,41 @@ class RecipeViewModel @Inject constructor(
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase
 ): ViewModel() {
 
-    private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
-    val recipe: LiveData<Recipe>
+    private var _recipeName: MutableLiveData<String?> = MutableLiveData<String?>()
+    val recipeName: LiveData<String?>
         get() {
-            return _recipe
+            return _recipeName
+        }
+
+    private var _recipeText: MutableLiveData<String?> = MutableLiveData<String?>()
+    val recipeText: LiveData<String?>
+        get() {
+            return _recipeText
+        }
+
+    private var _recipeIngredients: MutableLiveData<String?> = MutableLiveData<String?>()
+    val recipeIngredients: LiveData<String?>
+        get() {
+            return _recipeIngredients
+        }
+
+    private var _recipeCategory: MutableLiveData<Category?> = MutableLiveData<Category?>()
+    val recipeCategory: LiveData<Category?>
+        get() {
+            return _recipeCategory
+        }
+
+    private var _recipePortions: MutableLiveData<Int> = MutableLiveData<Int>(0)
+    val recipePortions: LiveData<Int>
+        get() {
+            return _recipePortions
+        }
+
+
+    private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
+    val recipeImage: LiveData<Uri?>
+        get() {
+            return _recipeImage
         }
 
     val categoriesLiveData: LiveData<List<Category>> = getCategories()
@@ -47,7 +79,12 @@ class RecipeViewModel @Inject constructor(
     }
 
     fun getRecipeById(id: Int){
-        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+//        TODO: заполнить поля вью модели
+//        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+    }
+
+    fun setImageUri(imageUri: Uri){
+        _recipeImage.value = imageUri
     }
 
     private fun parseInputData(
@@ -63,7 +100,7 @@ class RecipeViewModel @Inject constructor(
         val text = parseString(inputText)
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
-        val image = parseString(inputImage)
+        val image = parseString(recipeImage.value.toString())
         if(validateInput(name, text, portions, ingredients, image)){
             recipe = Recipe(
                 name = name,

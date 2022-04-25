@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
@@ -14,7 +14,6 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
-import com.google.android.material.textfield.TextInputLayout
 import javax.inject.Inject
 
 class RecipeAddEditFragment : Fragment() {
@@ -33,6 +32,12 @@ class RecipeAddEditFragment : Fragment() {
             return _binding ?: throw RuntimeException("Binding can not be null")
         }
 
+    private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+            recipeViewModel.setImageUri(it)
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         DaggerAppComponent.builder().appModule(AppModule(requireActivity().application)).build().inject(this)
@@ -43,7 +48,7 @@ class RecipeAddEditFragment : Fragment() {
         parseParams()
     }
 
-    fun parseParams(){
+    private fun parseParams(){
         val args = requireArguments()
         if (!args.containsKey(MODE_ARG)) {
             throw RuntimeException("Param mode not found")
@@ -73,11 +78,12 @@ class RecipeAddEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initCategoriesSpinner()
+        initRecipeImageIv()
         observeViewModel()
         launchInRightMode()
     }
 
-    fun observeViewModel(){
+    private fun observeViewModel(){
         val validationFields: Map<String, EditText> = mapOfValidationFields()
 
         recipeViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
@@ -94,22 +100,32 @@ class RecipeAddEditFragment : Fragment() {
         recipeViewModel.shouldClose.observe(viewLifecycleOwner) {
             activity?.onBackPressed()
         }
+
+        recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
+            binding.ivRecipeImage.setImageURI(it)
+        }
     }
 
-    fun initCategoriesSpinner(){
+    private fun initCategoriesSpinner(){
         spinnerAdapter = CategorySpinnerAdapter(requireActivity(), android.R.layout.simple_spinner_item)
         binding.spinnerRecipeCategory.adapter = spinnerAdapter
-
     }
 
-    fun launchInRightMode(){
+    private fun initRecipeImageIv(){
+        binding.ivRecipeImage.setOnClickListener {
+            fileChooserContract.launch("image/*")
+        }
+    }
+
+
+    private fun launchInRightMode(){
         when(mode) {
             ADD_MODE -> launchAddMode()
             EDIT_MODE -> launchEditMode()
         }
     }
 
-    fun launchAddMode(){
+    private fun launchAddMode(){
         binding.btnSaveRecipe.setOnClickListener {
             recipeViewModel.addRecipe(
                 binding.etRecipeName.text.toString(),
@@ -125,7 +141,7 @@ class RecipeAddEditFragment : Fragment() {
     }
 
 //    TODO: доделать
-    fun launchEditMode(){
+    private fun launchEditMode(){
         recipeViewModel.getRecipeById(recipeId)
         binding.btnSaveRecipe.setOnClickListener {
 //            recipeViewModel.updateRecipe(recipeId)
