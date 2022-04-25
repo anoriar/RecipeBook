@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipebook.R
@@ -16,6 +15,7 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.presentation.adapter.CategoryFilterAdapter
 import com.example.recipebook.presentation.adapter.RecipeListAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeListViewModel
+import com.google.android.flexbox.*
 import javax.inject.Inject
 
 
@@ -76,6 +76,12 @@ class RecipeListFragment : Fragment() {
                 recipeListViewModel.unselectCategory(it.id)
             }
         }
+
+        val layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexDirection = FlexDirection.ROW
+        recyclerView.layoutManager = layoutManager
+
+        recyclerView.itemAnimator = null
     }
 
     private fun initSearchView(){
