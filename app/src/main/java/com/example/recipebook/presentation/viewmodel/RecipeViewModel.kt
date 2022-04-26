@@ -69,7 +69,7 @@ class RecipeViewModel @Inject constructor(
         val text = parseString(inputText)
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
-        val image = parseString(recipeImage.value.toString())
+        val image = parseString(inputImage)
         if(validateInput(name, text, portions, ingredients, image)){
             recipe = Recipe(
                 name = name,

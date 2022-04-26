@@ -1,12 +1,21 @@
 package com.example.recipebook.presentation.fragment
 
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
@@ -14,6 +23,12 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.net.URI
+import java.util.*
 import javax.inject.Inject
 
 class RecipeAddEditFragment : Fragment() {
@@ -31,6 +46,12 @@ class RecipeAddEditFragment : Fragment() {
         get() {
             return _binding ?: throw RuntimeException("Binding can not be null")
         }
+
+    private var isWritePermissionGranted: Boolean = false
+
+    private val permissionLauncher: ActivityResultLauncher<Array<String>> = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        isWritePermissionGranted = it[android.Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: isWritePermissionGranted
+    }
 
     private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
@@ -126,6 +147,9 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun launchAddMode(){
+        val drawable = binding.ivRecipeImage.drawable
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        val uri: Uri = saveImageToExternalStorage(bitmap)
         binding.btnSaveRecipe.setOnClickListener {
             recipeViewModel.addRecipe(
                 binding.etRecipeName.text.toString(),
@@ -133,7 +157,7 @@ class RecipeAddEditFragment : Fragment() {
                 binding.etRecipePortions.text.toString(),
                 binding.etRecipeIngredients.text.toString(),
 //                TODO: изображения
-                "test",
+                uri.toString(),
 //                TODO:??
                 binding.spinnerRecipeCategory.selectedItem as Category
             )
@@ -158,6 +182,23 @@ class RecipeAddEditFragment : Fragment() {
         RecipeViewModel.PORTIONS_INVALID_FORMAT.first to binding.etRecipePortions
     )
 
+
+    // Method to save an image to external storage
+    private fun saveImageToExternalStorage(bitmap:Bitmap):Uri{
+        val path = Environment.getExternalStorageDirectory().toString()
+        val file = File(path, "${UUID.randomUUID()}.jpg")
+
+        try {
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException){
+            e.printStackTrace()
+        }
+
+        return Uri.parse(file.absolutePath)
+    }
     companion object {
         private const val MODE_ARG = "mode_arg"
         private const val RECIPE_ID_ARG = "recipe_id_arg"
