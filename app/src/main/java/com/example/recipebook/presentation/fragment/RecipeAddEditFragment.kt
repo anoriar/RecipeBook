@@ -147,10 +147,11 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun launchAddMode(){
-        val drawable = binding.ivRecipeImage.drawable
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        val uri: Uri = saveImageToExternalStorage(bitmap)
         binding.btnSaveRecipe.setOnClickListener {
+            val drawable = binding.ivRecipeImage.drawable
+            val bitmap = (drawable as BitmapDrawable).bitmap
+            val uri: Uri = saveImageToExternalStorage(bitmap)
+
             recipeViewModel.addRecipe(
                 binding.etRecipeName.text.toString(),
                 binding.etRecipeText.text.toString(),
