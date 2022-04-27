@@ -74,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="1"
+                    android:textSize="12sp"
                     android:inputType="numberSigned" />
             </LinearLayout>
 
@@ -109,6 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
+                    android:textSize="12sp"
                     android:importantForAutofill="no" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -143,7 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-
+                    android:textSize="12sp"
                     android:importantForAutofill="no" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -174,6 +176,7 @@
                 <Spinner
                     android:id="@+id/spinner_recipe_category"
                     android:layout_width="0dp"
+                    android:textSize="12sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>

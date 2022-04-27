@@ -19,6 +19,7 @@ import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
+import com.example.recipebook.presentation.util.ImageFromUri
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -116,7 +117,7 @@ class RecipeAddEditFragment : Fragment() {
             binding.etRecipeText.setText(it.text)
             binding.etRecipeIngredients.setText(it.ingredients)
             binding.etRecipePortions.setText(it.portions.toString())
-            binding.ivRecipeImage.setImageURI(it.image.toUri())
+            ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.image)
             binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it.category))
         }
 
