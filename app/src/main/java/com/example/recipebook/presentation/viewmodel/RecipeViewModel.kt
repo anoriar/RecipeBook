@@ -30,7 +30,14 @@ class RecipeViewModel @Inject constructor(
             return _recipeImage
         }
 
-    var categoriesLiveData: LiveData<List<Category>> = getCategories()
+    private var _categoriesLiveData: MutableLiveData<List<Category>> = MutableLiveData()
+    init {
+        _categoriesLiveData.value = getCategoriesUseCase.getCategories()
+    }
+    val categoriesLiveData: LiveData<List<Category>>
+        get() {
+            return _categoriesLiveData
+        }
 
     private var _errors: MutableLiveData<MutableList<Pair<String, Int>>> = MutableLiveData()
     val errors: MutableLiveData<MutableList<Pair<String, Int>>>
@@ -42,9 +49,6 @@ class RecipeViewModel @Inject constructor(
     val shouldClose: LiveData<Unit>
         get() = _shouldClose
 
-    private fun getCategories(): LiveData<List<Category>>{
-        return getCategoriesUseCase.getCategoriesLiveData()
-    }
 
     fun initRecipeById(id: Int){
         _recipe.value = getRecipeByIdUseCase.getRecipeById(id)

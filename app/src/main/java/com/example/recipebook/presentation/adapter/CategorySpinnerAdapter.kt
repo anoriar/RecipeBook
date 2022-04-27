@@ -27,6 +27,10 @@ class CategorySpinnerAdapter(
         return position.toLong()
     }
 
+    override fun getPosition(item: Category?): Int {
+        return values.indexOf(item)
+    }
+
     override fun getView(
         position: Int,
         convertView: View?,
