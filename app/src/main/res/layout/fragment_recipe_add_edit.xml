@@ -9,6 +9,7 @@
             type="com.example.recipebook.presentation.viewmodel.RecipeViewModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,9 +72,9 @@
                 <EditText
                     android:background="@null"
                     android:id="@+id/et_recipe_portions"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autofillHints="1"
+                    android:layout_marginStart="5dp"
                     android:textSize="12sp"
                     android:inputType="numberSigned" />
             </LinearLayout>
@@ -88,6 +89,7 @@
             app:contentPaddingTop="8dp"
             app:contentPaddingBottom="6dp"
             app:contentPaddingLeft="6dp"
+            android:scrollbars="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cv_recipe_portions">
 
@@ -107,9 +109,9 @@
                 <EditText
                     android:background="@null"
                     android:id="@+id/et_recipe_ingredients"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
                     android:textSize="12sp"
                     android:importantForAutofill="no" />
             </LinearLayout>
@@ -142,10 +144,10 @@
                 <EditText
                     android:background="@null"
                     android:id="@+id/et_recipe_text"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
                     android:textSize="12sp"
+                    android:inputType="textMultiLine"
                     android:importantForAutofill="no" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

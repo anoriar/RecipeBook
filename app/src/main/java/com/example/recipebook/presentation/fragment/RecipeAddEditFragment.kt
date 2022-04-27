@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import com.example.recipebook.R
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
@@ -137,7 +138,7 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun initCategoriesSpinner(){
-        spinnerAdapter = CategorySpinnerAdapter(requireActivity(), android.R.layout.simple_spinner_item)
+        spinnerAdapter = CategorySpinnerAdapter(requireActivity(), R.layout.spinner_item)
         binding.spinnerRecipeCategory.adapter = spinnerAdapter
     }
 
@@ -172,12 +173,12 @@ class RecipeAddEditFragment : Fragment() {
         onSaveCallback = {
             name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
             recipeViewModel.addRecipe(
-                name,
-                text,
-                portions,
-                ingredients,
-                image,
-                category
+                inputName = name,
+                inputText = text,
+                inputPortions = portions,
+                inputIngredients = ingredients,
+                inputImage = image,
+                inputCategory = category
             )
         }
     }
@@ -187,13 +188,13 @@ class RecipeAddEditFragment : Fragment() {
         onSaveCallback = {
                 name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
             recipeViewModel.updateRecipe(
-                recipeId,
-                name,
-                text,
-                portions,
-                ingredients,
-                image,
-                category
+                id = recipeId,
+                inputName = name,
+                inputText = text,
+                inputPortions = portions,
+                inputIngredients = ingredients,
+                inputImage = image,
+                inputCategory = category
             )
         }
     }

@@ -15,7 +15,7 @@ class RecipeMapper @Inject constructor(
             categoryId = recipe.category?.id?:0,
             name = recipe.name,
             text = recipe.text,
-            ingredients = recipe.text,
+            ingredients = recipe.ingredients,
             portions = recipe.portions,
             image = recipe.image,
             isFavourite = recipe.isFavourite
@@ -29,7 +29,7 @@ class RecipeMapper @Inject constructor(
             name = recipeWithCategory.recipe.name,
             category = category,
             text = recipeWithCategory.recipe.text,
-            ingredients = recipeWithCategory.recipe.text,
+            ingredients = recipeWithCategory.recipe.ingredients,
             portions = recipeWithCategory.recipe.portions,
             image = recipeWithCategory.recipe.image,
             isFavourite = recipeWithCategory.recipe.isFavourite

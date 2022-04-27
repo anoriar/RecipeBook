@@ -69,6 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:textSize="12sp"
                     app:numberAsText="@{viewModel.recipe.portions}"
                     tools:text="1"></TextView>
             </LinearLayout>
@@ -101,7 +102,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:textSize="12sp"
                     android:text="@{viewModel.recipe.ingredients}"
                     tools:text="@string/ingredients_tools_text"></TextView>
             </LinearLayout>
@@ -133,7 +134,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:textSize="12sp"
                     android:text="@{viewModel.recipe.text}"
                     tools:text="@string/cooking_method_tools_text"></TextView>
             </LinearLayout>
@@ -165,6 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:textSize="12sp"
                     android:text="@{viewModel.recipe.category.name}"
                     tools:text="мясо/птица"></TextView>
             </LinearLayout>
