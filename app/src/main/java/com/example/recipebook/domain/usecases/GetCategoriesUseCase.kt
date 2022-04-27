@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 class GetCategoriesUseCase @Inject constructor(private val categoryRepository: CategoryRepositoryInterface) {
 
-    fun getGategoriesLiveData(): LiveData<List<Category>>{
+    fun getCategoriesLiveData(): LiveData<List<Category>>{
        return categoryRepository.getCategoryListLiveData()
     }
 
-    fun getGategories(): List<Category>{
+    fun getCategories(): List<Category>{
         return categoryRepository.getCategoryList()
     }
 }

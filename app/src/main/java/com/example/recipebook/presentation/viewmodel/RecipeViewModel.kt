@@ -43,7 +43,7 @@ class RecipeViewModel @Inject constructor(
         get() = _shouldClose
 
     private fun getCategories(): LiveData<List<Category>>{
-        return getCategoriesUseCase.getGategoriesLiveData()
+        return getCategoriesUseCase.getCategoriesLiveData()
     }
 
     fun initRecipeById(id: Int){

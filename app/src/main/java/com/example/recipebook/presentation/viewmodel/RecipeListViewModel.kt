@@ -58,7 +58,7 @@ class RecipeListViewModel @Inject constructor(
     }
 
     private fun getCategories(): LiveData<List<Category>>{
-        return getCategoriesUseCase.getGategoriesLiveData()
+        return getCategoriesUseCase.getCategoriesLiveData()
     }
 
     fun changeSearchQuery(searchQuery: String){
