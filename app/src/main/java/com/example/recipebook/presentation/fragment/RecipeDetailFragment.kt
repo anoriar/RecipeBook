@@ -2,10 +2,8 @@ package com.example.recipebook.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.example.recipebook.R
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.databinding.FragmentRecipeDetailBinding
@@ -37,6 +35,7 @@ class RecipeDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseParams()
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -53,6 +52,23 @@ class RecipeDetailFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = recipeDetailViewModel
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.recipe_detail_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.edit_mode_menu_action -> {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.recipe_book_container, RecipeAddEditFragment.getEditInstance(recipeId))
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 

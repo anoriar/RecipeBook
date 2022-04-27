@@ -18,19 +18,19 @@ class RecipeViewModel @Inject constructor(
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase
 ): ViewModel() {
 
+    private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
+    val recipe: LiveData<Recipe>
+        get() {
+            return _recipe
+        }
+
     private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
     val recipeImage: LiveData<Uri?>
         get() {
             return _recipeImage
         }
 
-    val categoriesLiveData: LiveData<List<Category>> = getCategories()
-
-    private var _selectedCategoryId: MutableLiveData<Int> = MutableLiveData()
-    val selectedCategoryId: MutableLiveData<Int>
-        get() {
-            return _selectedCategoryId
-        }
+    var categoriesLiveData: LiveData<List<Category>> = getCategories()
 
     private var _errors: MutableLiveData<MutableList<Pair<String, Int>>> = MutableLiveData()
     val errors: MutableLiveData<MutableList<Pair<String, Int>>>
@@ -38,18 +38,16 @@ class RecipeViewModel @Inject constructor(
             return _errors
         }
 
-
     private val _shouldClose: MutableLiveData<Unit> = MutableLiveData<Unit>()
     val shouldClose: LiveData<Unit>
         get() = _shouldClose
 
     private fun getCategories(): LiveData<List<Category>>{
-        return getCategoriesUseCase.getGategories()
+        return getCategoriesUseCase.getGategoriesLiveData()
     }
 
-    fun getRecipeById(id: Int){
-//        TODO: заполнить поля вью модели
-//        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+    fun initRecipeById(id: Int){
+        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
     }
 
     fun setImageUri(imageUri: Uri){

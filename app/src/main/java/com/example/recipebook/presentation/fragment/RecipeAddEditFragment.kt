@@ -1,21 +1,18 @@
 package com.example.recipebook.presentation.fragment
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
@@ -27,7 +24,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.net.URI
 import java.util.*
 import javax.inject.Inject
 
@@ -37,6 +33,8 @@ class RecipeAddEditFragment : Fragment() {
     lateinit var recipeViewModel: RecipeViewModel
 
     private lateinit var spinnerAdapter: CategorySpinnerAdapter
+
+    private lateinit var onSaveCallback: ((name: String, text: String, portions: String, ingredients: String, image: String, category: Category) -> Unit)
 
     private var mode: String = UNKNOWN_MODE
     private var recipeId: Int = UNDEFINED_INDEX
@@ -100,6 +98,7 @@ class RecipeAddEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initCategoriesSpinner()
         initRecipeImageIv()
+        initSaveBtn()
         observeViewModel()
         launchInRightMode()
     }
@@ -110,6 +109,15 @@ class RecipeAddEditFragment : Fragment() {
         recipeViewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             spinnerAdapter.values = it
             spinnerAdapter.notifyDataSetChanged()
+        }
+
+        recipeViewModel.recipe.observe(viewLifecycleOwner) {
+            binding.etRecipeName.setText(it.name)
+            binding.etRecipeText.setText(it.text)
+            binding.etRecipeIngredients.setText(it.ingredients)
+            binding.etRecipePortions.setText(it.portions.toString())
+            binding.ivRecipeImage.setImageURI(it.image.toUri())
+            binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it.category))
         }
 
         recipeViewModel.errors.observe(viewLifecycleOwner) {
@@ -138,6 +146,19 @@ class RecipeAddEditFragment : Fragment() {
         }
     }
 
+    private fun initSaveBtn(){
+        binding.btnSaveRecipe.setOnClickListener {
+            onSaveCallback(
+                binding.etRecipeName.text.toString(),
+                binding.etRecipeText.text.toString(),
+                binding.etRecipePortions.text.toString(),
+                binding.etRecipeIngredients.text.toString(),
+                getUploadedImageUri(),
+                binding.spinnerRecipeCategory.selectedItem as Category
+            )
+        }
+    }
+
 
     private fun launchInRightMode(){
         when(mode) {
@@ -147,30 +168,41 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun launchAddMode(){
-        binding.btnSaveRecipe.setOnClickListener {
-            val drawable = binding.ivRecipeImage.drawable
-            val bitmap = (drawable as BitmapDrawable).bitmap
-            val uri: Uri = saveImageToExternalStorage(bitmap)
-
+        onSaveCallback = {
+            name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
             recipeViewModel.addRecipe(
-                binding.etRecipeName.text.toString(),
-                binding.etRecipeText.text.toString(),
-                binding.etRecipePortions.text.toString(),
-                binding.etRecipeIngredients.text.toString(),
-//                TODO: изображения
-                uri.toString(),
-//                TODO:??
-                binding.spinnerRecipeCategory.selectedItem as Category
+                name,
+                text,
+                portions,
+                ingredients,
+                image,
+                category
             )
         }
     }
 
-//    TODO: доделать
     private fun launchEditMode(){
-        recipeViewModel.getRecipeById(recipeId)
-        binding.btnSaveRecipe.setOnClickListener {
-//            recipeViewModel.updateRecipe(recipeId)
+        recipeViewModel.initRecipeById(recipeId)
+        onSaveCallback = {
+                name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
+            recipeViewModel.updateRecipe(
+                recipeId,
+                name,
+                text,
+                portions,
+                ingredients,
+                image,
+                category
+            )
         }
+    }
+
+
+    private fun getUploadedImageUri(): String{
+        val drawable = binding.ivRecipeImage.drawable
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        val uri: Uri = saveImageToExternalStorage(bitmap)
+        return uri.toString()
     }
 
     /**

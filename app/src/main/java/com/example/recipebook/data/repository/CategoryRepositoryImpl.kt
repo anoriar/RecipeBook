@@ -13,11 +13,16 @@ class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao
 ): CategoryRepositoryInterface {
 
-    override fun getCategoryList(): LiveData<List<Category>> {
-        return Transformations.map(categoryDao.getCategories()){
+    override fun getCategoryListLiveData(): LiveData<List<Category>> {
+        return Transformations.map(categoryDao.getCategoriesLiveData()){
             categoryMapper.mapListDbEntityToListDomain(it)
         }
     }
+
+    override fun getCategoryList(): List<Category> {
+        return categoryMapper.mapListDbEntityToListDomain(categoryDao.getCategories())
+    }
+
 
     override fun getCategoryById(id: Int): Category {
         return categoryMapper.mapDbEntityToDomain(categoryDao.getCategoryById(id))

@@ -175,8 +175,7 @@
                     android:id="@+id/spinner_recipe_category"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:selectedItemPosition="@={recipeViewModel.selectedCategoryId}"/>
+                    android:layout_weight="1" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

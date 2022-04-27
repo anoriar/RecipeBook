@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import com.example.recipebook.domain.entity.Category
 
 interface CategoryRepositoryInterface {
-    fun getCategoryList(): LiveData<List<Category>>
+    fun getCategoryListLiveData(): LiveData<List<Category>>
+    fun getCategoryList(): List<Category>
     fun getCategoryById(id: Int): Category
     fun addCategory(category: Category)
     fun updateCategory(category: Category)

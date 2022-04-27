@@ -16,5 +16,8 @@ interface CategoryDao {
     fun getCategoryById(id: Int): CategoryDbEntity
 
     @Query("SELECT * FROM categories")
-    fun getCategories(): LiveData<List<CategoryDbEntity>>
+    fun getCategoriesLiveData(): LiveData<List<CategoryDbEntity>>
+
+    @Query("SELECT * FROM categories")
+    fun getCategories(): List<CategoryDbEntity>
 }
