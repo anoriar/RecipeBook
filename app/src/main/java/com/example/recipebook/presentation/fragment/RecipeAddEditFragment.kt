@@ -53,13 +53,23 @@ class RecipeAddEditFragment : Fragment() {
 
     private val permissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) {}
+    ) {
+        if(it) {
+            isWriteExternalStoragePermitted = true
+        }
+    }
 
     private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        if (!isWriteExternalStoragePermitted){
+            permissionLauncher.launch(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
         if (it != null) {
             recipeViewModel.setImageUri(it)
         }
     }
+
+    private var isWriteExternalStoragePermitted: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,6 +78,7 @@ class RecipeAddEditFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isWriteExternalStoragePermitted = PermissionChecker.checkPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
         parseParams()
     }
 
@@ -203,7 +214,7 @@ class RecipeAddEditFragment : Fragment() {
 
 
     private fun getUploadedImageUri(): String{
-        if(checkSaveImagePermission()){
+        if(isWriteExternalStoragePermitted){
             val drawable = binding.ivRecipeImage.drawable
             val bitmap = (drawable as BitmapDrawable).bitmap
             val uri: Uri = saveImageToExternalStorage(bitmap)
@@ -222,20 +233,6 @@ class RecipeAddEditFragment : Fragment() {
         RecipeViewModel.PORTIONS_INVALID_FORMAT.first to binding.etRecipePortions
     )
 
-
-    private fun checkSaveImagePermission():Boolean{
-
-        when {
-            PermissionChecker.checkPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                return true
-            }
-            else -> {
-                permissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
-        }
-        return false
-    }
 
     private fun saveImageToExternalStorage(bitmap:Bitmap):Uri{
         val path = Environment.getExternalStorageDirectory().toString()

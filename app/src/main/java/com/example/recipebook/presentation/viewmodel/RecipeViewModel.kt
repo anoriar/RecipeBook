@@ -148,9 +148,6 @@ class RecipeViewModel @Inject constructor(
         if(inputIngredients.isEmpty()){
             errors.add(INGREDIENTS_IS_EMPTY)
         }
-        if(inputImage.isEmpty()){
-            errors.add(IMAGE_IS_EMPTY)
-        }
         if(errors.isNotEmpty()){
             _errors.value = errors
             return false
