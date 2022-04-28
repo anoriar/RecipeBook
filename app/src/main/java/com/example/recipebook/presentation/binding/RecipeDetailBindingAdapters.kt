@@ -1,5 +1,6 @@
 package com.example.recipebook.presentation.binding
 
+import android.Manifest
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import androidx.databinding.BindingAdapter
 import androidx.documentfile.provider.DocumentFile
 import com.example.recipebook.R
 import com.example.recipebook.presentation.util.ImageFromUri
+import com.example.recipebook.presentation.util.permission.PermissionChecker
 import java.io.File
 
 

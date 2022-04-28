@@ -1,6 +1,8 @@
 package com.example.recipebook.presentation.fragment
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -12,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.example.recipebook.R
@@ -21,6 +24,7 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.util.ImageFromUri
+import com.example.recipebook.presentation.util.permission.PermissionChecker
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -47,11 +51,9 @@ class RecipeAddEditFragment : Fragment() {
             return _binding ?: throw RuntimeException("Binding can not be null")
         }
 
-    private var isWritePermissionGranted: Boolean = false
-
-    private val permissionLauncher: ActivityResultLauncher<Array<String>> = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        isWritePermissionGranted = it[android.Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: isWritePermissionGranted
-    }
+    private val permissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {}
 
     private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
@@ -201,10 +203,13 @@ class RecipeAddEditFragment : Fragment() {
 
 
     private fun getUploadedImageUri(): String{
-        val drawable = binding.ivRecipeImage.drawable
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        val uri: Uri = saveImageToExternalStorage(bitmap)
-        return uri.toString()
+        if(checkSaveImagePermission()){
+            val drawable = binding.ivRecipeImage.drawable
+            val bitmap = (drawable as BitmapDrawable).bitmap
+            val uri: Uri = saveImageToExternalStorage(bitmap)
+            return uri.toString()
+        }
+        return ""
     }
 
     /**
@@ -218,7 +223,20 @@ class RecipeAddEditFragment : Fragment() {
     )
 
 
-    // Method to save an image to external storage
+    private fun checkSaveImagePermission():Boolean{
+
+        when {
+            PermissionChecker.checkPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                return true
+            }
+            else -> {
+                permissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        }
+        return false
+    }
+
     private fun saveImageToExternalStorage(bitmap:Bitmap):Uri{
         val path = Environment.getExternalStorageDirectory().toString()
         val file = File(path, "${UUID.randomUUID()}.jpg")
@@ -234,6 +252,7 @@ class RecipeAddEditFragment : Fragment() {
 
         return Uri.parse(file.absolutePath)
     }
+
     companion object {
         private const val MODE_ARG = "mode_arg"
         private const val RECIPE_ID_ARG = "recipe_id_arg"
