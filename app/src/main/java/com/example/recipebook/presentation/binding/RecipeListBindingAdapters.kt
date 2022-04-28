@@ -1,6 +1,8 @@
 package com.example.recipebook.presentation.binding
 
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.recipebook.R
@@ -15,3 +17,4 @@ fun bindCategoryFilterButtonBackgroundColor(btn: Button, isSelected: Boolean){
     }
     btn.setBackgroundColor(color)
 }
+

@@ -12,6 +12,7 @@ import com.example.recipebook.R
 import com.example.recipebook.databinding.FragmentRecipeListBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
+import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.presentation.adapter.CategoryFilterAdapter
 import com.example.recipebook.presentation.adapter.RecipeListAdapter
 import com.example.recipebook.presentation.viewmodel.RecipeListViewModel
@@ -57,6 +58,7 @@ class RecipeListFragment : Fragment() {
         initSearchView()
         initAddButton()
         initRecipeOnClickListener()
+        initOnFavoriteClickListener()
         observeViewModel()
     }
 
@@ -130,6 +132,15 @@ class RecipeListFragment : Fragment() {
                 .replace(R.id.recipe_book_container, RecipeDetailFragment.getInstance(it.id?:0))
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    private fun initOnFavoriteClickListener() {
+        recipeListAdapter.onFavoriteClickListener = { recipe: Recipe, checked: Boolean ->
+            when(checked){
+                true -> recipeListViewModel.addRecipeToFavourites(recipe)
+                false -> recipeListViewModel.deleteRecipeFromFavourites(recipe)
+            }
         }
     }
 

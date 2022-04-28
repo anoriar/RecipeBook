@@ -2,16 +2,19 @@ package com.example.recipebook.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipebook.databinding.RecipeListItemBinding
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.presentation.adapter_callback.RecipeDiffCallback
 
+
 class RecipeListAdapter: ListAdapter<Recipe, RecipeListAdapter.RecipeViewHolder>(
     RecipeDiffCallback()
 ) {
     var onRecipeClickListener: ((Recipe) -> Unit)? = null
+    var onFavoriteClickListener: ((Recipe, Boolean) -> Unit)? = null
 
     class RecipeViewHolder(val recipeListItemBinding: RecipeListItemBinding) : RecyclerView.ViewHolder(recipeListItemBinding.root)
 
@@ -25,5 +28,14 @@ class RecipeListAdapter: ListAdapter<Recipe, RecipeListAdapter.RecipeViewHolder>
         holder.itemView.setOnClickListener {
             onRecipeClickListener?.invoke(recipe)
         }
+
+        holder.recipeListItemBinding.checkboxFav.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(
+                buttonView: CompoundButton?,
+                isChecked: Boolean
+            ) {
+                onFavoriteClickListener?.invoke(recipe, isChecked)
+            }
+        })
     }
 }
