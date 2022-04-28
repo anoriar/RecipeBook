@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.recipebook.presentation.viewmodel.RecipeListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,12 +30,17 @@
                 android:layout_weight="70"
                 android:layoutDirection="rtl" />
 
-            <ImageView
-                android:id="@+id/iv_favorites_list"
+            <CheckBox
+                android:id="@+id/cb_fav_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_favorite_border_24"
-                android:layout_gravity="center" />
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:button="@drawable/favorite_checkbox_selector"
+                android:buttonTint="@color/light_red"
+                android:checked="@{viewModel.recipeListQuery.isFavorites}"
+                android:onCheckedChanged="@{(view, checked) -> viewModel.changeIsFavorites(checked)}"
+                />
         </LinearLayout>
 
 

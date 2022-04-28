@@ -26,6 +26,9 @@ class RecipeRepositoryImpl @Inject constructor(
         if(recipeListQuery.categoryIds.isNotEmpty()){
             conditions.add("recipes.categoryId IN (${recipeListQuery.categoryIds.joinToString(", ")})")
         }
+        if(recipeListQuery.isFavorites) {
+            conditions.add("recipes.isFavourite = 1")
+        }
         if(conditions.isNotEmpty()){
             strQuery += " where ${conditions.joinToString(" and ")}"
         }

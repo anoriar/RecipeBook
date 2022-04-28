@@ -21,6 +21,10 @@ class RecipeListViewModel @Inject constructor(
     private var _recipeListQuery: MutableLiveData<RecipeListQuery> = MutableLiveData<RecipeListQuery>(
         RecipeListQuery()
     )
+    val recipeListQuery: LiveData<RecipeListQuery>
+        get() {
+            return _recipeListQuery
+        }
 
     private val categoriesLiveData: LiveData<List<Category>> = getCategories()
 
@@ -36,6 +40,10 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
+    val recipeListLiveData: LiveData<List<Recipe>> = Transformations.switchMap(_recipeListQuery) {
+        getRecipesByQuery(it)
+    }
+
     private fun buildCategoriesFilter(){
         categoriesFilter.value = categoriesLiveData.value?.map { category ->
             var isSelected = false
@@ -48,11 +56,6 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-
-    val recipeListLiveData: LiveData<List<Recipe>> = Transformations.switchMap(_recipeListQuery) {
-        getRecipesByQuery(it)
-    }
-
     private fun getRecipesByQuery(recipeListQuery: RecipeListQuery): LiveData<List<Recipe>>{
        return getRecipesUseCase.getRecipes(recipeListQuery)
     }
@@ -63,6 +66,10 @@ class RecipeListViewModel @Inject constructor(
 
     fun changeSearchQuery(searchQuery: String){
         _recipeListQuery.value = _recipeListQuery.value?.copy(search = searchQuery)?:RecipeListQuery()
+    }
+
+    fun changeIsFavorites(isFavorites: Boolean){
+        _recipeListQuery.value = _recipeListQuery.value?.copy(isFavorites = isFavorites)?:RecipeListQuery()
     }
 
     fun selectCategory(categoryId: Int){

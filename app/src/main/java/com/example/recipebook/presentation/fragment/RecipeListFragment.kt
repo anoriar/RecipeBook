@@ -59,6 +59,8 @@ class RecipeListFragment : Fragment() {
         initAddButton()
         initRecipeOnClickListener()
         initOnFavoriteClickListener()
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = recipeListViewModel
         observeViewModel()
     }
 
