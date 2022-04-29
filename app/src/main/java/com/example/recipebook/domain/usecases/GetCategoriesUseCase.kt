@@ -7,10 +7,6 @@ import javax.inject.Inject
 
 class GetCategoriesUseCase @Inject constructor(private val categoryRepository: CategoryRepositoryInterface) {
 
-    fun getCategoriesLiveData(): LiveData<List<Category>>{
-       return categoryRepository.getCategoryListLiveData()
-    }
-
     suspend fun getCategories(): List<Category>{
         return categoryRepository.getCategoryList()
     }

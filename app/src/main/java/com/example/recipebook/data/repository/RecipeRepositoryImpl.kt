@@ -1,7 +1,5 @@
 package com.example.recipebook.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.recipebook.data.database.dao.RecipeDao
 import com.example.recipebook.data.mapper.RecipeMapper
@@ -16,7 +14,7 @@ class RecipeRepositoryImpl @Inject constructor(
 ): RecipeRepositoryInterface
 {
 
-    override fun getRecipeList(recipeListQuery: RecipeListQuery): LiveData<List<Recipe>> {
+    override fun getRecipeList(recipeListQuery: RecipeListQuery): List<Recipe> {
         var strQuery = "SELECT * FROM recipes"
         val conditions: MutableList<String> = mutableListOf()
         if(recipeListQuery.search != null){
@@ -34,10 +32,7 @@ class RecipeRepositoryImpl @Inject constructor(
         }
         val query = SimpleSQLiteQuery(strQuery)
         val recipesDb = recipeDao.getRecipes(query)
-        return Transformations.map(recipesDb
-        ) {
-            recipeMapper.mapListDbEntityToListDomain(it)
-        }
+        return recipeMapper.mapListDbEntityToListDomain(recipesDb)
     }
 
     override suspend fun getRecipeById(id: Int): Recipe {

@@ -10,7 +10,7 @@ import com.example.recipebook.data.database.entity.RecipeWithCategory
 interface RecipeDao {
     @Transaction
     @RawQuery
-    fun getRecipes(query: SupportSQLiteQuery): LiveData<List<RecipeWithCategory>>
+    fun getRecipes(query: SupportSQLiteQuery): List<RecipeWithCategory>
 
     @Transaction
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")

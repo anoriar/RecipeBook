@@ -1,10 +1,7 @@
 package com.example.recipebook.presentation.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.recipebook.R
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
@@ -32,16 +29,9 @@ class RecipeViewModel @Inject constructor(
             return _recipeImage
         }
 
-    private var _categoriesLiveData: MutableLiveData<List<Category>> = MutableLiveData()
-    init {
-        viewModelScope.launch {
-            _categoriesLiveData.value = getCategoriesUseCase.getCategories()
-        }
+    val categoriesLiveData: LiveData<List<Category>> = liveData {
+        emit(getCategoriesUseCase.getCategories())
     }
-    val categoriesLiveData: LiveData<List<Category>>
-        get() {
-            return _categoriesLiveData
-        }
 
     private var _errors: MutableLiveData<MutableList<Pair<String, Int>>> = MutableLiveData()
     val errors: MutableLiveData<MutableList<Pair<String, Int>>>

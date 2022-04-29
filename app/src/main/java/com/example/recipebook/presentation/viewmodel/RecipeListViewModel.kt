@@ -9,6 +9,7 @@ import com.example.recipebook.domain.usecases.AddRecipeToFavouritesUseCase
 import com.example.recipebook.domain.usecases.DeleteRecipeFromFavouritesUseCase
 import com.example.recipebook.domain.usecases.GetCategoriesUseCase
 import com.example.recipebook.domain.usecases.GetRecipesUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +28,9 @@ class RecipeListViewModel @Inject constructor(
             return _recipeListQuery
         }
 
-    private val categoriesLiveData: LiveData<List<Category>> = getCategories()
+    private val categoriesLiveData: LiveData<List<Category>> = liveData {
+        emit(getCategoriesUseCase.getCategories())
+    }
 
     val categoriesFilter: MediatorLiveData<List<CategoryFilter>> = MediatorLiveData()
     init {
@@ -42,7 +45,9 @@ class RecipeListViewModel @Inject constructor(
     }
 
     val recipeListLiveData: LiveData<List<Recipe>> = Transformations.switchMap(_recipeListQuery) {
-        getRecipesByQuery(it)
+        liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            emit(getRecipesByQuery(it))
+        }
     }
 
     private fun buildCategoriesFilter(){
@@ -57,13 +62,10 @@ class RecipeListViewModel @Inject constructor(
         }
     }
 
-    private fun getRecipesByQuery(recipeListQuery: RecipeListQuery): LiveData<List<Recipe>>{
+    private fun getRecipesByQuery(recipeListQuery: RecipeListQuery): List<Recipe>{
        return getRecipesUseCase.getRecipes(recipeListQuery)
     }
 
-    private fun getCategories(): LiveData<List<Category>>{
-        return getCategoriesUseCase.getCategoriesLiveData()
-    }
 
     fun changeSearchQuery(searchQuery: String){
         _recipeListQuery.value = _recipeListQuery.value?.copy(search = searchQuery)?:RecipeListQuery()
