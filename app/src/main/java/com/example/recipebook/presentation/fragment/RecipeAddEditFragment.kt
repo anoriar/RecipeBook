@@ -135,7 +135,10 @@ class RecipeAddEditFragment : Fragment() {
             binding.etRecipeIngredients.setText(it.ingredients)
             binding.etRecipePortions.setText(it.portions.toString())
             ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.image)
-            binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it.category))
+        }
+
+        recipeViewModel.categorySpinnerPairData.observe(viewLifecycleOwner) {
+            binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it.first.category))
         }
 
         recipeViewModel.errors.observe(viewLifecycleOwner) {
@@ -281,11 +284,11 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun showActionMessage(resId: Int){
-        Snackbar.make(
-            requireView(),
-            resId,
-            Snackbar.LENGTH_SHORT
-        ).show()
+//        Snackbar.make(
+//            requireView(),
+//            resId,
+//            Snackbar.LENGTH_SHORT
+//        ).show()
     }
 
     companion object {

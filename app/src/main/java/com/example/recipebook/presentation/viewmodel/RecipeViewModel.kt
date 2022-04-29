@@ -33,6 +33,22 @@ class RecipeViewModel @Inject constructor(
         emit(getCategoriesUseCase.getCategories())
     }
 
+    val categorySpinnerPairData: LiveData<Pair<Recipe, List<Category>>> =
+        object: MediatorLiveData<Pair<Recipe, List<Category>>>() {
+            var recipe: Recipe? = null
+            var categories: List<Category>? = null
+            init {
+                addSource(_recipe) { recipe ->
+                    this.recipe = recipe
+                    categories?.let { value = recipe to it }
+                }
+                addSource(categoriesLiveData) { categories ->
+                    this.categories = categories
+                    recipe?.let { value = it to categories }
+                }
+            }
+        }
+
     private var _errors: MutableLiveData<MutableList<Pair<String, Int>>> = MutableLiveData()
     val errors: MutableLiveData<MutableList<Pair<String, Int>>>
         get() {
