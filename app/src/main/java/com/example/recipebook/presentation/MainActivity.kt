@@ -1,20 +1,13 @@
 package com.example.recipebook.presentation
 
 import android.Manifest
-import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import com.example.recipebook.R
-import com.example.recipebook.di.DaggerAppComponent
-import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.presentation.fragment.RecipeListFragment
 import com.example.recipebook.presentation.util.permission.PermissionChecker
-import com.example.recipebook.presentation.viewmodel.RecipeListViewModel
-import com.example.recipebook.presentation.viewmodel.RecipeViewModel
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private fun launchFragment(){
         supportFragmentManager.beginTransaction().
         replace(R.id.recipe_book_container, RecipeListFragment.getInstance())
-            .addToBackStack(null)
             .commit()
     }
 
