@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -26,6 +27,7 @@ import com.example.recipebook.presentation.util.FragmentNavEnum
 import com.example.recipebook.presentation.util.ImageFromUri
 import com.example.recipebook.presentation.util.permission.PermissionChecker
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -194,6 +196,7 @@ class RecipeAddEditFragment : Fragment() {
                 inputImage = image,
                 inputCategory = category
             )
+            showActionMessage(R.string.recipe_added)
         }
     }
 
@@ -210,6 +213,7 @@ class RecipeAddEditFragment : Fragment() {
                 inputImage = image,
                 inputCategory = category
             )
+            showActionMessage(R.string.recipe_edited)
         }
     }
 
@@ -273,10 +277,15 @@ class RecipeAddEditFragment : Fragment() {
     fun deleteRecipe(){
         recipeViewModel.deleteRecipe()
         requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.recipe_book_container, RecipeListFragment.getInstance())
-            .setReorderingAllowed(true)
-            .commit()
+        showActionMessage(R.string.recipe_deleted)
+    }
+
+    private fun showActionMessage(resId: Int){
+        Snackbar.make(
+            requireView(),
+            resId,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     companion object {
