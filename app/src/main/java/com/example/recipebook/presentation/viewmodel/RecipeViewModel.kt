@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.recipebook.R
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.usecases.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeViewModel @Inject constructor(
@@ -32,7 +34,9 @@ class RecipeViewModel @Inject constructor(
 
     private var _categoriesLiveData: MutableLiveData<List<Category>> = MutableLiveData()
     init {
-        _categoriesLiveData.value = getCategoriesUseCase.getCategories()
+        viewModelScope.launch {
+            _categoriesLiveData.value = getCategoriesUseCase.getCategories()
+        }
     }
     val categoriesLiveData: LiveData<List<Category>>
         get() {
@@ -51,7 +55,9 @@ class RecipeViewModel @Inject constructor(
 
 
     fun initRecipeById(id: Int){
-        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+        viewModelScope.launch {
+            _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+        }
     }
 
     fun setImageUri(imageUri: Uri){
@@ -96,8 +102,10 @@ class RecipeViewModel @Inject constructor(
     ){
         val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
         if(recipe != null){
-            addRecipeUseCase.addRecipe(recipe)
-            finishWork()
+            viewModelScope.launch {
+                addRecipeUseCase.addRecipe(recipe)
+                finishWork()
+            }
         }
     }
 
@@ -112,13 +120,17 @@ class RecipeViewModel @Inject constructor(
     ){
         val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
         if(recipe != null){
-            updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
+            viewModelScope.launch {
+                updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
+            }
             finishWork()
         }
     }
 
     fun deleteRecipe(recipe: Recipe){
-        deleteRecipeUseCase.deleteRecipe(recipe)
+        viewModelScope.launch {
+            deleteRecipeUseCase.deleteRecipe(recipe)
+        }
     }
 
     private fun parseString(str: String): String{

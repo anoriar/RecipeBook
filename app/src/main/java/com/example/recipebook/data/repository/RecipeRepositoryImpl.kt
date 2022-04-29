@@ -40,20 +40,20 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRecipeById(id: Int): Recipe {
+    override suspend fun getRecipeById(id: Int): Recipe {
         val recipeDb = recipeDao.getRecipeById(id)
         return recipeMapper.mapDbEntityToDomain(recipeDb)
     }
 
-    override fun addRecipe(recipe: Recipe) {
+    override suspend fun addRecipe(recipe: Recipe) {
         recipeDao.addUpdateRecipe(recipeMapper.mapDomainToDbEntity(recipe))
     }
 
-    override fun updateRecipe(recipe: Recipe) {
+    override suspend fun updateRecipe(recipe: Recipe) {
         recipeDao.addUpdateRecipe(recipeMapper.mapDomainToDbEntity(recipe))
     }
 
-    override fun deleteRecipe(recipe: Recipe) {
+    override suspend fun deleteRecipe(recipe: Recipe) {
         recipeDao.deleteRecipe(recipeMapper.mapDomainToDbEntity(recipe))
     }
 }

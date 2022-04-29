@@ -6,8 +6,8 @@ import com.example.recipebook.domain.repository.query.RecipeListQuery
 
 interface RecipeRepositoryInterface {
     fun getRecipeList(recipeListQuery: RecipeListQuery): LiveData<List<Recipe>>
-    fun getRecipeById(id: Int): Recipe
-    fun addRecipe(recipe: Recipe)
-    fun updateRecipe(recipe: Recipe)
-    fun deleteRecipe(recipe: Recipe)
+    suspend fun getRecipeById(id: Int): Recipe
+    suspend fun addRecipe(recipe: Recipe)
+    suspend fun updateRecipe(recipe: Recipe)
+    suspend fun deleteRecipe(recipe: Recipe)
 }

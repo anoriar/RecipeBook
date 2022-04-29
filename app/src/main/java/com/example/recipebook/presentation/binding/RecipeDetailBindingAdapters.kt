@@ -20,6 +20,8 @@ fun bindNumberAsText(tv: TextView, number: Int){
 }
 
 @BindingAdapter("imageToImageView")
-fun bindImageToImageView(iv: ImageView, imageUri: String){
-    ImageFromUri.setImageFromUri(iv, imageUri)
+fun bindImageToImageView(iv: ImageView, imageUri: String?){
+    if(imageUri != null){
+        ImageFromUri.setImageFromUri(iv, imageUri)
+    }
 }

@@ -14,11 +14,11 @@ interface RecipeDao {
 
     @Transaction
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
-    fun getRecipeById(id: Int): RecipeWithCategory
+    suspend fun getRecipeById(id: Int): RecipeWithCategory
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addUpdateRecipe(recipe: RecipeDbEntity)
+    suspend fun addUpdateRecipe(recipe: RecipeDbEntity)
 
     @Delete
-    fun deleteRecipe(recipe: RecipeDbEntity)
+    suspend fun deleteRecipe(recipe: RecipeDbEntity)
 }

@@ -11,7 +11,7 @@ class GetCategoriesUseCase @Inject constructor(private val categoryRepository: C
        return categoryRepository.getCategoryListLiveData()
     }
 
-    fun getCategories(): List<Category>{
+    suspend fun getCategories(): List<Category>{
         return categoryRepository.getCategoryList()
     }
 }

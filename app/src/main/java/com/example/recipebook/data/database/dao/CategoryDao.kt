@@ -19,5 +19,5 @@ interface CategoryDao {
     fun getCategoriesLiveData(): LiveData<List<CategoryDbEntity>>
 
     @Query("SELECT * FROM categories")
-    fun getCategories(): List<CategoryDbEntity>
+    suspend fun getCategories(): List<CategoryDbEntity>
 }

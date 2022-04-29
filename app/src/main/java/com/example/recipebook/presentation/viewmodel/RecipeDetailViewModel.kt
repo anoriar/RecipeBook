@@ -3,8 +3,10 @@ package com.example.recipebook.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.usecases.GetRecipeByIdUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeDetailViewModel @Inject constructor(
@@ -19,6 +21,8 @@ class RecipeDetailViewModel @Inject constructor(
         }
 
     fun getRecipeById(id: Int){
-        _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+        viewModelScope.launch {
+            _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+        }
     }
 }

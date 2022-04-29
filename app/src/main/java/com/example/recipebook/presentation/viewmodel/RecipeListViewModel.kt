@@ -9,6 +9,7 @@ import com.example.recipebook.domain.usecases.AddRecipeToFavouritesUseCase
 import com.example.recipebook.domain.usecases.DeleteRecipeFromFavouritesUseCase
 import com.example.recipebook.domain.usecases.GetCategoriesUseCase
 import com.example.recipebook.domain.usecases.GetRecipesUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeListViewModel @Inject constructor(
@@ -85,10 +86,14 @@ class RecipeListViewModel @Inject constructor(
     }
 
     fun addRecipeToFavourites(recipe: Recipe){
-        addRecipeToFavouritesUseCase.addRecipeToFavourites(recipe)
+        viewModelScope.launch {
+            addRecipeToFavouritesUseCase.addRecipeToFavourites(recipe)
+        }
     }
 
     fun deleteRecipeFromFavourites(recipe: Recipe){
-        deleteRecipeFromFavouritesUseCase.deleteRecipeToFavourites(recipe)
+        viewModelScope.launch {
+            deleteRecipeFromFavouritesUseCase.deleteRecipeToFavourites(recipe)
+        }
     }
 }

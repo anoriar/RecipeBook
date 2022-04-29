@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class GetRecipeByIdUseCase @Inject constructor(private val recipeRepository: RecipeRepositoryInterface) {
 
-    fun getRecipeById(id: Int): Recipe{
+    suspend fun getRecipeById(id: Int): Recipe{
         return recipeRepository.getRecipeById(id)
     }
 }

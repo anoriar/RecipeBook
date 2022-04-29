@@ -19,7 +19,7 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCategoryList(): List<Category> {
+    override suspend fun getCategoryList(): List<Category> {
         return categoryMapper.mapListDbEntityToListDomain(categoryDao.getCategories())
     }
 

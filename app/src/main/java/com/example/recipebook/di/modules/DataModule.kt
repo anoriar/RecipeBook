@@ -19,7 +19,7 @@ class DataModule {
 
     @Provides
     fun provideRecipeDatabase(application: Application): RecipeDatabase{
-        return Room.databaseBuilder(application, RecipeDatabase::class.java, RecipeDatabase.DB_NAME).allowMainThreadQueries().createFromAsset("database/recipes.db").build()
+        return Room.databaseBuilder(application, RecipeDatabase::class.java, RecipeDatabase.DB_NAME).createFromAsset("database/recipes.db").build()
     }
 
     @Provides
