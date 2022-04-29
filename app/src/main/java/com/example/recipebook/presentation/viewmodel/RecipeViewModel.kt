@@ -117,9 +117,11 @@ class RecipeViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecipe(recipe: Recipe){
+    fun deleteRecipe(){
         viewModelScope.launch {
-            deleteRecipeUseCase.deleteRecipe(recipe)
+            _recipe.value?.let {
+                deleteRecipeUseCase.deleteRecipe(it)
+            }
         }
     }
 

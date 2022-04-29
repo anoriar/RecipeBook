@@ -15,6 +15,7 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.presentation.adapter.CategoryFilterAdapter
 import com.example.recipebook.presentation.adapter.RecipeListAdapter
+import com.example.recipebook.presentation.util.FragmentNavEnum
 import com.example.recipebook.presentation.viewmodel.RecipeListViewModel
 import com.google.android.flexbox.*
 import javax.inject.Inject
@@ -132,7 +133,7 @@ class RecipeListFragment : Fragment() {
         recipeListAdapter.onRecipeClickListener = {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.recipe_book_container, RecipeDetailFragment.getInstance(it.id?:0))
-                .addToBackStack(null)
+                .addToBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name)
                 .commit()
         }
     }

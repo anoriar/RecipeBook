@@ -9,6 +9,7 @@ import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.databinding.FragmentRecipeDetailBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
+import com.example.recipebook.presentation.util.FragmentNavEnum
 import com.example.recipebook.presentation.viewmodel.RecipeDetailViewModel
 import javax.inject.Inject
 
@@ -63,7 +64,7 @@ class RecipeDetailFragment : Fragment() {
             R.id.edit_mode_menu_action -> {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.recipe_book_container, RecipeAddEditFragment.getEditInstance(recipeId))
-                    .addToBackStack(null)
+                    .addToBackStack(FragmentNavEnum.RECIPE_ADD_EDIT_FRAGMENT.name)
                     .commit()
                 true
             }

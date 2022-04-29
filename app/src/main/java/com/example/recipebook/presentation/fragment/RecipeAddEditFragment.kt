@@ -8,21 +8,21 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.recipebook.R
 import com.example.recipebook.databinding.FragmentRecipeAddEditBinding
 import com.example.recipebook.di.DaggerAppComponent
 import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
+import com.example.recipebook.presentation.util.FragmentNavEnum
 import com.example.recipebook.presentation.util.ImageFromUri
 import com.example.recipebook.presentation.util.permission.PermissionChecker
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
@@ -80,6 +80,7 @@ class RecipeAddEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         isWriteExternalStoragePermitted = PermissionChecker.checkPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
         parseParams()
+        setHasOptionsMenu(true)
     }
 
     private fun parseParams(){
@@ -248,6 +249,34 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         return Uri.parse(file.absolutePath)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if(mode == EDIT_MODE){
+            inflater.inflate(R.menu.recipe_edit_menu, menu)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(mode == EDIT_MODE){
+            return when(item.itemId) {
+                R.id.delete_recipe_menu_action -> {
+                    deleteRecipe()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun deleteRecipe(){
+        recipeViewModel.deleteRecipe()
+        requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.recipe_book_container, RecipeListFragment.getInstance())
+            .setReorderingAllowed(true)
+            .commit()
     }
 
     companion object {
