@@ -2,16 +2,12 @@ package com.example.recipebook.presentation.fragment
 
 import android.Manifest
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Environment
 import android.view.*
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.recipebook.R
@@ -21,16 +17,13 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.util.FragmentNavEnum
-import com.example.recipebook.presentation.util.ImageFromUri
 import com.example.recipebook.presentation.util.permission.PermissionChecker
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
 import com.google.android.material.snackbar.Snackbar
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
+import java.io.InputStream
 import java.util.*
 import javax.inject.Inject
+
 
 class RecipeAddEditFragment : Fragment() {
 
@@ -58,13 +51,15 @@ class RecipeAddEditFragment : Fragment() {
         }
     }
 
-    private val fileChooserContract = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+    private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
         if (!isWriteExternalStoragePermitted){
             permissionLauncher.launch(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
+
         if (it != null) {
-            recipeViewModel.changeImage(it.toDrawable(resources))
+            val inputStream: InputStream? = requireActivity().contentResolver.openInputStream(it)
+            recipeViewModel.changeImage(Drawable.createFromStream(inputStream, it.toString()))
         }
     }
 
@@ -155,7 +150,7 @@ class RecipeAddEditFragment : Fragment() {
 
     private fun initRecipeImageIv(){
         binding.ivRecipeImage.setOnClickListener {
-            fileChooserContract.launch(null)
+            fileChooserContract.launch("image/*")
         }
     }
 
