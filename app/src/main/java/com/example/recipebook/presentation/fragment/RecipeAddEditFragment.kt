@@ -147,10 +147,6 @@ class RecipeAddEditFragment : Fragment() {
             }
         }
 
-        recipeViewModel.shouldClose.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
-        }
-
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
             binding.ivRecipeImage.setImageURI(it)
         }
@@ -199,6 +195,7 @@ class RecipeAddEditFragment : Fragment() {
                 inputImage = image,
                 inputCategory = category
             )
+            requireActivity().supportFragmentManager.popBackStack()
             showActionMessage(R.string.recipe_added)
         }
     }
@@ -216,6 +213,7 @@ class RecipeAddEditFragment : Fragment() {
                 inputImage = image,
                 inputCategory = category
             )
+            requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             showActionMessage(R.string.recipe_edited)
         }
     }
@@ -284,11 +282,11 @@ class RecipeAddEditFragment : Fragment() {
     }
 
     private fun showActionMessage(resId: Int){
-//        Snackbar.make(
-//            requireView(),
-//            resId,
-//            Snackbar.LENGTH_SHORT
-//        ).show()
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            resId,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

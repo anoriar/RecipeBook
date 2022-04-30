@@ -61,9 +61,6 @@ class RecipeViewModel @Inject constructor(
             return _errors
         }
 
-    private val _shouldClose: MutableLiveData<Unit> = MutableLiveData<Unit>()
-    val shouldClose: LiveData<Unit>
-        get() = _shouldClose
 
 
     fun initRecipeById(id: Int){
@@ -116,7 +113,6 @@ class RecipeViewModel @Inject constructor(
         if(recipe != null){
             viewModelScope.launch {
                 addRecipeUseCase.addRecipe(recipe)
-                finishWork()
             }
         }
     }
@@ -135,7 +131,6 @@ class RecipeViewModel @Inject constructor(
             viewModelScope.launch {
                 updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
             }
-            finishWork()
         }
     }
 
@@ -180,11 +175,6 @@ class RecipeViewModel @Inject constructor(
         }
         return true
     }
-
-    fun finishWork() {
-        _shouldClose.value = Unit
-    }
-
 
     companion object {
         val NAME_IS_EMPTY = "NAME_IS_EMPTY" to R.string.empty_field_error
