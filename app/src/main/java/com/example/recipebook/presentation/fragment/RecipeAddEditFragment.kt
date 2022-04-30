@@ -2,7 +2,6 @@ package com.example.recipebook.presentation.fragment
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -10,11 +9,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.*
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.recipebook.R
@@ -42,7 +39,7 @@ class RecipeAddEditFragment : Fragment() {
 
     private lateinit var spinnerAdapter: CategorySpinnerAdapter
 
-    private lateinit var onSaveCallback: ((name: String, text: String, portions: String, ingredients: String, image: String, category: Category) -> Unit)
+    private lateinit var onSaveCallback: ((name: String, text: String, portions: String, ingredients: String, category: Category) -> Unit)
 
     private var mode: String = UNKNOWN_MODE
     private var recipeId: Int = UNDEFINED_INDEX
@@ -61,13 +58,13 @@ class RecipeAddEditFragment : Fragment() {
         }
     }
 
-    private val fileChooserContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
+    private val fileChooserContract = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
         if (!isWriteExternalStoragePermitted){
             permissionLauncher.launch(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
         if (it != null) {
-            recipeViewModel.setImageUri(it)
+            recipeViewModel.changeImage(it.toDrawable(resources))
         }
     }
 
@@ -134,7 +131,6 @@ class RecipeAddEditFragment : Fragment() {
             binding.etRecipeText.setText(it.text)
             binding.etRecipeIngredients.setText(it.ingredients)
             binding.etRecipePortions.setText(it.portions.toString())
-            ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.image)
         }
 
         recipeViewModel.categorySpinnerPairData.observe(viewLifecycleOwner) {
@@ -148,7 +144,7 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
-            binding.ivRecipeImage.setImageURI(it)
+            binding.ivRecipeImage.setImageDrawable(it)
         }
     }
 
@@ -159,7 +155,7 @@ class RecipeAddEditFragment : Fragment() {
 
     private fun initRecipeImageIv(){
         binding.ivRecipeImage.setOnClickListener {
-            fileChooserContract.launch("image/*")
+            fileChooserContract.launch(null)
         }
     }
 
@@ -170,7 +166,6 @@ class RecipeAddEditFragment : Fragment() {
                 binding.etRecipeText.text.toString(),
                 binding.etRecipePortions.text.toString(),
                 binding.etRecipeIngredients.text.toString(),
-                getUploadedImageUri(),
                 binding.spinnerRecipeCategory.selectedItem as Category
             )
         }
@@ -186,13 +181,12 @@ class RecipeAddEditFragment : Fragment() {
 
     private fun launchAddMode(){
         onSaveCallback = {
-            name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
+            name: String, text: String, portions: String, ingredients: String, category: Category ->
             recipeViewModel.addRecipe(
                 inputName = name,
                 inputText = text,
                 inputPortions = portions,
                 inputIngredients = ingredients,
-                inputImage = image,
                 inputCategory = category
             )
             requireActivity().supportFragmentManager.popBackStack()
@@ -203,14 +197,13 @@ class RecipeAddEditFragment : Fragment() {
     private fun launchEditMode(){
         recipeViewModel.initRecipeById(recipeId)
         onSaveCallback = {
-                name: String, text: String, portions: String, ingredients: String, image: String, category: Category ->
+                name: String, text: String, portions: String, ingredients: String, category: Category ->
             recipeViewModel.updateRecipe(
                 id = recipeId,
                 inputName = name,
                 inputText = text,
                 inputPortions = portions,
                 inputIngredients = ingredients,
-                inputImage = image,
                 inputCategory = category
             )
             requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -219,15 +212,6 @@ class RecipeAddEditFragment : Fragment() {
     }
 
 
-    private fun getUploadedImageUri(): String{
-        if(isWriteExternalStoragePermitted){
-            val drawable = binding.ivRecipeImage.drawable
-            val bitmap = (drawable as BitmapDrawable).bitmap
-            val uri: Uri = saveImageToExternalStorage(bitmap)
-            return uri.toString()
-        }
-        return ""
-    }
 
     /**
      * Map ViewModel schema with views
@@ -238,23 +222,6 @@ class RecipeAddEditFragment : Fragment() {
         RecipeViewModel.INGREDIENTS_IS_EMPTY.first to binding.etRecipeIngredients,
         RecipeViewModel.PORTIONS_INVALID_FORMAT.first to binding.etRecipePortions
     )
-
-
-    private fun saveImageToExternalStorage(bitmap:Bitmap):Uri{
-        val path = Environment.getExternalStorageDirectory().toString()
-        val file = File(path, "${UUID.randomUUID()}.jpg")
-
-        try {
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            stream.flush()
-            stream.close()
-        } catch (e: IOException){
-            e.printStackTrace()
-        }
-
-        return Uri.parse(file.absolutePath)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if(mode == EDIT_MODE){

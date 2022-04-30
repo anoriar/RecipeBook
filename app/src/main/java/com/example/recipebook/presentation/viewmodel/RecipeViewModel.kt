@@ -1,11 +1,15 @@
 package com.example.recipebook.presentation.viewmodel
 
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.recipebook.R
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.usecases.*
+import com.example.recipebook.presentation.util.media.ImageManager
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +18,8 @@ class RecipeViewModel @Inject constructor(
     private val updateRecipeUseCase: UpdateRecipeUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
-    private val getRecipeByIdUseCase: GetRecipeByIdUseCase
+    private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
+    private val imageManager: ImageManager
 ): ViewModel() {
 
     private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
@@ -23,8 +28,8 @@ class RecipeViewModel @Inject constructor(
             return _recipe
         }
 
-    private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
-    val recipeImage: LiveData<Uri?>
+    private var _recipeImage: MutableLiveData<Drawable?> = MutableLiveData<Drawable?>()
+    val recipeImage: LiveData<Drawable?>
         get() {
             return _recipeImage
         }
@@ -65,12 +70,16 @@ class RecipeViewModel @Inject constructor(
 
     fun initRecipeById(id: Int){
         viewModelScope.launch {
-            _recipe.value = getRecipeByIdUseCase.getRecipeById(id)
+            val recipe = getRecipeByIdUseCase.getRecipeById(id)
+            _recipe.value = recipe
+            if(recipe.image.isNotEmpty()){
+                _recipeImage.value = Drawable.createFromPath(recipe.image)
+            }
         }
     }
 
-    fun setImageUri(imageUri: Uri){
-        _recipeImage.value = imageUri
+    fun changeImage(drawable: Drawable){
+        _recipeImage.value = drawable
     }
 
     private fun parseInputData(
@@ -78,7 +87,6 @@ class RecipeViewModel @Inject constructor(
         inputText: String,
         inputPortions: String,
         inputIngredients: String,
-        inputImage: String,
         inputCategory: Category
     ): Recipe?{
         var recipe: Recipe? = null
@@ -86,8 +94,9 @@ class RecipeViewModel @Inject constructor(
         val text = parseString(inputText)
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
-        val image = parseString(inputImage)
-        if(validateInput(name, text, portions, ingredients, image)){
+        val image = saveUploadedImage()
+
+        if(validateInput(name, text, portions, ingredients)){
             recipe = Recipe(
                 name = name,
                 text = text,
@@ -106,10 +115,9 @@ class RecipeViewModel @Inject constructor(
         inputText: String,
         inputPortions: String,
         inputIngredients: String,
-        inputImage: String,
         inputCategory: Category
     ){
-        val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
+        val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputCategory)
         if(recipe != null){
             viewModelScope.launch {
                 addRecipeUseCase.addRecipe(recipe)
@@ -123,10 +131,9 @@ class RecipeViewModel @Inject constructor(
         inputText: String,
         inputPortions: String,
         inputIngredients: String,
-        inputImage: String,
         inputCategory: Category
     ){
-        val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputImage, inputCategory)
+        val recipe = parseInputData(inputName, inputText, inputPortions, inputIngredients, inputCategory)
         if(recipe != null){
             viewModelScope.launch {
                 updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
@@ -134,10 +141,18 @@ class RecipeViewModel @Inject constructor(
         }
     }
 
+
+    private fun saveUploadedImage(): String{
+        val drawable = recipeImage.value
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        return imageManager.saveImageToExternalStorage(bitmap)
+    }
+
     fun deleteRecipe(){
         viewModelScope.launch {
             _recipe.value?.let {
                 deleteRecipeUseCase.deleteRecipe(it)
+                imageManager.removeImageToExternalStorage(it.image)
             }
         }
     }
@@ -154,7 +169,7 @@ class RecipeViewModel @Inject constructor(
         }
     }
 
-    private fun validateInput(inputName: String, inputText: String, inputPortions: Int, inputIngredients: String, inputImage: String): Boolean{
+    private fun validateInput(inputName: String, inputText: String, inputPortions: Int, inputIngredients: String): Boolean{
         val errors: MutableList<Pair<String, Int>> = mutableListOf()
         if(inputName.isEmpty()){
             errors.add(NAME_IS_EMPTY)
