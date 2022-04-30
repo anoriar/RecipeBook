@@ -11,9 +11,17 @@ import java.util.*
 import javax.inject.Inject
 
 class ImageManager @Inject constructor() {
+    companion object {
+        const val DIR_NAME = "RecipeBook"
+    }
+
     fun saveImageToExternalStorage(bitmap: Bitmap): String {
         val path = Environment.getExternalStorageDirectory().toString()
-        val file = File(path, "${UUID.randomUUID()}.jpg")
+        val dir: File = File(path + "/${DIR_NAME}")
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+        val file = File(dir, "${UUID.randomUUID()}.jpg")
 
         try {
             val stream: OutputStream = FileOutputStream(file)
