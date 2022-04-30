@@ -27,7 +27,7 @@ class ImageManager @Inject constructor() {
         return file.absolutePath
     }
 
-    fun removeImageToExternalStorage(filePath: String): Boolean {
+    fun removeImageFromExternalStorage(filePath: String): Boolean {
         val file: File = File(filePath)
         return file.delete()
     }

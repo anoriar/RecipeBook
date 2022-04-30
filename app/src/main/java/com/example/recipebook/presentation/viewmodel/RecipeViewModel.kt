@@ -1,8 +1,12 @@
 package com.example.recipebook.presentation.viewmodel
 
+import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.recipebook.R
@@ -11,16 +15,21 @@ import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.usecases.*
 import com.example.recipebook.presentation.util.media.ImageManager
 import kotlinx.coroutines.launch
+import java.io.FileDescriptor
+import java.io.InputStream
 import javax.inject.Inject
 
 class RecipeViewModel @Inject constructor(
+    application: Application,
     private val addRecipeUseCase: AddRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
     private val imageManager: ImageManager
-): ViewModel() {
+): AndroidViewModel(application) {
+
+    private val context = getApplication<Application>().applicationContext
 
     private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
     val recipe: LiveData<Recipe>
@@ -28,8 +37,8 @@ class RecipeViewModel @Inject constructor(
             return _recipe
         }
 
-    private var _recipeImage: MutableLiveData<Drawable?> = MutableLiveData<Drawable?>()
-    val recipeImage: LiveData<Drawable?>
+    private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
+    val recipeImage: LiveData<Uri?>
         get() {
             return _recipeImage
         }
@@ -73,13 +82,13 @@ class RecipeViewModel @Inject constructor(
             val recipe = getRecipeByIdUseCase.getRecipeById(id)
             _recipe.value = recipe
             if(recipe.image.isNotEmpty()){
-                _recipeImage.value = Drawable.createFromPath(recipe.image)
+                _recipeImage.value = recipe.image.toUri()
             }
         }
     }
 
-    fun changeImage(drawable: Drawable){
-        _recipeImage.value = drawable
+    fun changeImage(uri: Uri){
+        _recipeImage.value = uri
     }
 
     private fun parseInputData(
@@ -94,7 +103,12 @@ class RecipeViewModel @Inject constructor(
         val text = parseString(inputText)
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
-        val image = saveUploadedImage()
+
+        val image = if(recipeImage.value?.path != _recipe.value?.image){
+            saveUploadedImage()
+        }else{
+            _recipe.value?.image?:""
+        }
 
         if(validateInput(name, text, portions, ingredients)){
             recipe = Recipe(
@@ -137,22 +151,34 @@ class RecipeViewModel @Inject constructor(
         if(recipe != null){
             viewModelScope.launch {
                 updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
+                _recipe.value?.let {
+                    if(it.image != recipe.image){
+                        imageManager.removeImageFromExternalStorage(it.image)
+                    }
+                }
             }
         }
     }
 
 
     private fun saveUploadedImage(): String{
-        val drawable = recipeImage.value
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        return imageManager.saveImageToExternalStorage(bitmap)
+        val uri = recipeImage.value
+        uri?.let {
+            val parcelFileDescriptor: ParcelFileDescriptor? = context.contentResolver.openFileDescriptor(it, "r")
+            val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
+            val bitmap: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor?.close()
+            return imageManager.saveImageToExternalStorage(bitmap)
+        }
+
+        return ""
     }
 
     fun deleteRecipe(){
         viewModelScope.launch {
             _recipe.value?.let {
                 deleteRecipeUseCase.deleteRecipe(it)
-                imageManager.removeImageToExternalStorage(it.image)
+                imageManager.removeImageFromExternalStorage(it.image)
             }
         }
     }

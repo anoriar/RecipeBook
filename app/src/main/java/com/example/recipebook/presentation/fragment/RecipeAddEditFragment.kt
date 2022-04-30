@@ -57,9 +57,8 @@ class RecipeAddEditFragment : Fragment() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
 
-        if (it != null) {
-            val inputStream: InputStream? = requireActivity().contentResolver.openInputStream(it)
-            recipeViewModel.changeImage(Drawable.createFromStream(inputStream, it.toString()))
+        if (it != null && isWriteExternalStoragePermitted) {
+            recipeViewModel.changeImage(it)
         }
     }
 
@@ -139,7 +138,7 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
-            binding.ivRecipeImage.setImageDrawable(it)
+            binding.ivRecipeImage.setImageURI(it)
         }
     }
 
