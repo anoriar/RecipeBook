@@ -1,5 +1,6 @@
 package com.example.recipebook.presentation.util.media
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
@@ -10,13 +11,13 @@ import java.io.OutputStream
 import java.util.*
 import javax.inject.Inject
 
-class ImageManager @Inject constructor() {
+class ImageManager @Inject constructor(val context: Context) {
     companion object {
         const val DIR_NAME = "RecipeBook"
     }
 
     fun saveImageToExternalStorage(bitmap: Bitmap): String {
-        val path = Environment.getExternalStorageDirectory().toString()
+        val path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString()
         val dir: File = File(path + "/${DIR_NAME}")
         if (!dir.exists()) {
             dir.mkdir()
