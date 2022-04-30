@@ -138,7 +138,7 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         recipeViewModel.categorySpinnerPairData.observe(viewLifecycleOwner) {
-            binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it.first.category))
+            binding.spinnerRecipeCategory.setSelection(spinnerAdapter.getPosition(it))
         }
 
         recipeViewModel.errors.observe(viewLifecycleOwner) {
