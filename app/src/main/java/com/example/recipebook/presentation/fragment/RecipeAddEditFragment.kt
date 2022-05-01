@@ -139,7 +139,9 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
-            ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.toString())
+            it?.let {
+                binding.ivRecipeImage.setImageURI(it)
+            }
         }
     }
 

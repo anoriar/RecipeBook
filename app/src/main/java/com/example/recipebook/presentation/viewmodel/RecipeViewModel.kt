@@ -1,12 +1,6 @@
 package com.example.recipebook.presentation.viewmodel
 
-import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.recipebook.R
@@ -15,21 +9,16 @@ import com.example.recipebook.domain.entity.Recipe
 import com.example.recipebook.domain.usecases.*
 import com.example.recipebook.presentation.util.media.ImageManager
 import kotlinx.coroutines.launch
-import java.io.FileDescriptor
-import java.io.InputStream
 import javax.inject.Inject
 
 class RecipeViewModel @Inject constructor(
-    application: Application,
     private val addRecipeUseCase: AddRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
     private val imageManager: ImageManager
-): AndroidViewModel(application) {
-
-    private val context = getApplication<Application>().applicationContext
+): ViewModel() {
 
     private var _recipe: MutableLiveData<Recipe> = MutableLiveData<Recipe>()
     val recipe: LiveData<Recipe>
@@ -37,7 +26,7 @@ class RecipeViewModel @Inject constructor(
             return _recipe
         }
 
-    private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>()
+    private var _recipeImage: MutableLiveData<Uri?> = MutableLiveData<Uri?>(null)
     val recipeImage: LiveData<Uri?>
         get() {
             return _recipeImage
@@ -104,10 +93,10 @@ class RecipeViewModel @Inject constructor(
         val portions = parseNumber(inputPortions)
         val ingredients = parseString(inputIngredients)
 
-        val image = if(recipeImage.value?.path != _recipe.value?.image){
+        val image = if(_recipe.value?.image == null || recipeImage.value?.path != _recipe.value?.image){
             saveUploadedImage()
         }else{
-            _recipe.value?.image?:""
+            _recipe.value?.image
         }
 
         if(validateInput(name, text, portions, ingredients)){
@@ -161,17 +150,13 @@ class RecipeViewModel @Inject constructor(
     }
 
 
-    private fun saveUploadedImage(): String{
+    private fun saveUploadedImage(): String?{
         val uri = recipeImage.value
         uri?.let {
-            val parcelFileDescriptor: ParcelFileDescriptor? = context.contentResolver.openFileDescriptor(it, "r")
-            val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
-            val bitmap: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-            parcelFileDescriptor?.close()
-            return imageManager.saveImageToExternalStorage(bitmap)
+            return imageManager.saveImageToExternalStorage(uri)
         }
 
-        return ""
+        return null
     }
 
     fun deleteRecipe(){
