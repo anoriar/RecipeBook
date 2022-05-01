@@ -28,7 +28,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:imageToImageView="@{recipe.image}"
-                app:srcCompat="@drawable/recipe_image_preview" />
+                app:srcCompat="@drawable/image_blank" />
 
             <TextView
                 android:id="@+id/tv_recipe_name"

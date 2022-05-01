@@ -140,7 +140,33 @@ class RecipeAddEditFragment : Fragment() {
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
             it?.let {
-                binding.ivRecipeImage.setImageURI(it)
+                try{
+                    requireActivity().contentResolver.openInputStream(it);
+                    binding.ivRecipeImage.setImageURI(it)
+                }catch(ex: Throwable){
+                    binding.ivRecipeImage.setImageResource(R.drawable.image_blank)
+                }
+            }
+        }
+
+//        Действия при завершении работы с фрагментом
+        recipeViewModel.finishedCode.observe(viewLifecycleOwner) {
+            it?.let {
+                when(it) {
+                    RecipeViewModel.ADD_FINISHED_CODE -> {
+                        requireActivity().supportFragmentManager.popBackStack()
+                        showActionMessage(R.string.recipe_added)
+                    }
+                    RecipeViewModel.EDIT_FINISHED_CODE -> {
+                        requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        showActionMessage(R.string.recipe_edited)
+                    }
+                    RecipeViewModel.DELETE_FINISHED_CODE -> {
+                        requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        showActionMessage(R.string.recipe_deleted)
+                    }
+                }
+
             }
         }
     }
@@ -186,8 +212,6 @@ class RecipeAddEditFragment : Fragment() {
                 inputIngredients = ingredients,
                 inputCategory = category
             )
-            requireActivity().supportFragmentManager.popBackStack()
-            showActionMessage(R.string.recipe_added)
         }
     }
 
@@ -203,8 +227,6 @@ class RecipeAddEditFragment : Fragment() {
                 inputIngredients = ingredients,
                 inputCategory = category
             )
-            requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            showActionMessage(R.string.recipe_edited)
         }
     }
 
@@ -241,8 +263,6 @@ class RecipeAddEditFragment : Fragment() {
 
     fun deleteRecipe(){
         recipeViewModel.deleteRecipe()
-        requireActivity().supportFragmentManager.popBackStack(FragmentNavEnum.RECIPE_DETAIL_FRAGMENT.name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        showActionMessage(R.string.recipe_deleted)
     }
 
     private fun showActionMessage(resId: Int){

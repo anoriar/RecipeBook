@@ -64,7 +64,11 @@ class RecipeViewModel @Inject constructor(
             return _errors
         }
 
-
+    private var _finishedCode: MutableLiveData<String?> = MutableLiveData<String?>(null)
+    val finishedCode: LiveData<String?>
+        get() {
+            return _finishedCode
+        }
 
     fun initRecipeById(id: Int){
         viewModelScope.launch {
@@ -124,6 +128,7 @@ class RecipeViewModel @Inject constructor(
         if(recipe != null){
             viewModelScope.launch {
                 addRecipeUseCase.addRecipe(recipe)
+                _finishedCode.value = ADD_FINISHED_CODE
             }
         }
     }
@@ -145,6 +150,7 @@ class RecipeViewModel @Inject constructor(
                         imageManager.removeImageFromExternalStorage(it.image)
                     }
                 }
+                _finishedCode.value = EDIT_FINISHED_CODE
             }
         }
     }
@@ -166,6 +172,7 @@ class RecipeViewModel @Inject constructor(
                 if(it.image != null){
                     imageManager.removeImageFromExternalStorage(it.image)
                 }
+                _finishedCode.value = DELETE_FINISHED_CODE
             }
         }
     }
@@ -210,5 +217,10 @@ class RecipeViewModel @Inject constructor(
         val INGREDIENTS_IS_EMPTY = "INGREDIENTS_IS_EMPTY" to R.string.empty_field_error
         val IMAGE_IS_EMPTY = "IMAGE_IS_EMPTY" to R.string.empty_field_error
         val PORTIONS_INVALID_FORMAT = "PORTIONS_INVALID_FORMAT" to R.string.invalid_format_error
+
+
+        val ADD_FINISHED_CODE = "add_finish"
+        val EDIT_FINISHED_CODE = "edit_finish"
+        val DELETE_FINISHED_CODE = "finish_delete"
     }
 }

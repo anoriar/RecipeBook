@@ -15,7 +15,9 @@ class ImageManager @Inject constructor(val context: Context) {
         const val DIR_NAME = "RecipeBook"
     }
 
-    fun saveImageToExternalStorage(imageUri: Uri): String {
+    fun saveImageToExternalStorage(imageUri: Uri): String? {
+        try {
+
         val parcelFileDescriptor: ParcelFileDescriptor? = context.contentResolver.openFileDescriptor(imageUri, "r")
         val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
         val bitmap: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
@@ -28,16 +30,18 @@ class ImageManager @Inject constructor(val context: Context) {
         }
         val file = File(dir, "${UUID.randomUUID()}.jpg")
 
-        try {
+
             val stream: OutputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             stream.flush()
             stream.close()
+
+            return file.absolutePath
         } catch (e: IOException){
             e.printStackTrace()
         }
 
-        return file.absolutePath
+        return null
     }
 
     fun removeImageFromExternalStorage(filePath: String): Boolean {
