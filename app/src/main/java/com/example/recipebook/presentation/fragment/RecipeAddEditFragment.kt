@@ -140,12 +140,7 @@ class RecipeAddEditFragment : Fragment() {
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
             it?.let {
-                try{
-                    requireActivity().contentResolver.openInputStream(it);
-                    binding.ivRecipeImage.setImageURI(it)
-                }catch(ex: Throwable){
-                    binding.ivRecipeImage.setImageResource(R.drawable.image_blank)
-                }
+                ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.toString())
             }
         }
 
