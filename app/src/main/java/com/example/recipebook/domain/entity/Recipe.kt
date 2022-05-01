@@ -6,7 +6,7 @@ data class Recipe(
     val text: String,
     val ingredients: String,
     val portions: Int,
-    val image: String,
+    val image: String?,
     val isFavourite: Boolean = false,
     val id: Int?
 ) {

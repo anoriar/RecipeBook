@@ -2,6 +2,7 @@ package com.example.recipebook.di.modules
 
 import android.app.Application
 import androidx.room.Room
+import com.example.recipebook.data.database.MIGRATION_1_2
 import com.example.recipebook.data.database.RecipeDatabase
 import com.example.recipebook.data.database.dao.CategoryDao
 import com.example.recipebook.data.database.dao.RecipeDao
@@ -19,7 +20,10 @@ class DataModule {
 
     @Provides
     fun provideRecipeDatabase(application: Application): RecipeDatabase{
-        return Room.databaseBuilder(application, RecipeDatabase::class.java, RecipeDatabase.DB_NAME).createFromAsset("database/recipes.db").build()
+        return Room.databaseBuilder(application, RecipeDatabase::class.java, RecipeDatabase.DB_NAME)
+            .createFromAsset("database/recipes.db")
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Provides

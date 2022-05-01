@@ -81,7 +81,7 @@ class RecipeViewModel @Inject constructor(
         viewModelScope.launch {
             val recipe = getRecipeByIdUseCase.getRecipeById(id)
             _recipe.value = recipe
-            if(recipe.image.isNotEmpty()){
+            if(recipe.image != null){
                 _recipeImage.value = recipe.image.toUri()
             }
         }
@@ -152,7 +152,7 @@ class RecipeViewModel @Inject constructor(
             viewModelScope.launch {
                 updateRecipeUseCase.updateRecipe(recipe.copy(id = id))
                 _recipe.value?.let {
-                    if(it.image != recipe.image){
+                    if(it.image != null && it.image != recipe.image){
                         imageManager.removeImageFromExternalStorage(it.image)
                     }
                 }
@@ -178,7 +178,9 @@ class RecipeViewModel @Inject constructor(
         viewModelScope.launch {
             _recipe.value?.let {
                 deleteRecipeUseCase.deleteRecipe(it)
-                imageManager.removeImageFromExternalStorage(it.image)
+                if(it.image != null){
+                    imageManager.removeImageFromExternalStorage(it.image)
+                }
             }
         }
     }

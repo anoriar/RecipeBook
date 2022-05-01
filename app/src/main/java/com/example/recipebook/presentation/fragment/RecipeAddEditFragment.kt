@@ -17,6 +17,7 @@ import com.example.recipebook.di.modules.AppModule
 import com.example.recipebook.domain.entity.Category
 import com.example.recipebook.presentation.adapter.CategorySpinnerAdapter
 import com.example.recipebook.presentation.util.FragmentNavEnum
+import com.example.recipebook.presentation.util.ImageFromUri
 import com.example.recipebook.presentation.util.permission.PermissionChecker
 import com.example.recipebook.presentation.viewmodel.RecipeViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -138,7 +139,7 @@ class RecipeAddEditFragment : Fragment() {
         }
 
         recipeViewModel.recipeImage.observe(viewLifecycleOwner) {
-            binding.ivRecipeImage.setImageURI(it)
+            ImageFromUri.setImageFromUri(binding.ivRecipeImage, it.toString())
         }
     }
 
